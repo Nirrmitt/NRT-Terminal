@@ -288,6 +288,9 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
 .contact-submit:hover{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 9px 24px rgba(56,189,248,.15)}
 .contact-note{color:var(--muted);font-size:.75rem;line-height:1.5}
 .contact-status{min-height:1.2em;color:var(--green);font-size:.82rem}
+.contact-status.is-error{color:var(--rose)}
+.contact-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.footer-quote{max-width:760px;margin:34px auto 28px;padding:0 18px;border:0;color:var(--muted);font-size:.9rem;font-style:italic;line-height:1.7}
 .footer-divider{height:1px;background:var(--border);margin-bottom:28px}
 .footer-copy{color:var(--muted);font-size:.82rem}
 .footer-copy span{color:var(--cyan)}
@@ -780,6 +783,7 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
           </div>
         </div>
         <form class="contact-form" id="contactForm">
+          <input class="contact-honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="contact-form-row">
             <div class="contact-field">
               <label for="contactName">Your name</label>
@@ -794,12 +798,13 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
             <label for="contactMessage">Message</label>
             <textarea id="contactMessage" name="message" placeholder="What would you like to discuss?" required></textarea>
           </div>
-          <button class="contact-submit" type="submit"><i class="fas fa-paper-plane"></i> Prepare email</button>
-          <p class="contact-note">Your email app will open with your message ready to send. This site does not store or send form submissions.</p>
-          <p class="contact-status" id="contactStatus" aria-live="polite"></p>
+          <button class="contact-submit" type="submit"><i class="fas fa-paper-plane"></i><span>Send message</span></button>
+          <p class="contact-note">Messages are sent through FormSubmit. On first use, I must confirm its activation email before delivery is enabled. The service processes submissions; see its <a href="https://formsubmit.co/privacy.pdf" target="_blank" rel="noopener noreferrer">privacy information</a>.</p>
+          <p class="contact-status" id="contactStatus" role="status" aria-live="polite"></p>
         </form>
       </div>
     </div>
+    <blockquote class="footer-quote">“Physics, AI, and Neuroscience seem to point toward a ‘Universal Mind,’ echoing millennia-old philosophies of Panpsychism and Vedanta.”</blockquote>
     <div class="footer-copy">&copy; 2026 <span>Nirrmit R. Tickoo</span> · Building useful AI and data products</div>
   </div>
 </footer>
@@ -950,16 +955,37 @@ document.addEventListener('keydown',event=>{
 });
 
 // ── Contact form ──
-function createContactMailto(name,email,message){
-  const subject=`Portfolio enquiry from ${name}`;
-  const body=`Name: ${name}\nEmail: ${email}\n\n${message}`;
-  return `mailto:nirrmit.rtickoo@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-document.getElementById('contactForm').addEventListener('submit',event=>{
+document.getElementById('contactForm').addEventListener('submit',async event=>{
   event.preventDefault();
-  const form=new FormData(event.currentTarget);
-  document.getElementById('contactStatus').textContent='Opening your email app with the message draft…';
-  window.location.href=createContactMailto(form.get('name'),form.get('email'),form.get('message'));
+  const form=event.currentTarget;
+  const status=document.getElementById('contactStatus');
+  const submitButton=form.querySelector('button[type="submit"]');
+  const formData=new FormData(form);
+  if(formData.get('_honey')) return;
+  const payload=Object.fromEntries(formData.entries());
+  payload._subject=`Portfolio message from ${payload.name}`;
+  payload._replyto=payload.email;
+  submitButton.disabled=true;
+  submitButton.querySelector('span').textContent='Sending…';
+  status.classList.remove('is-error');
+  status.textContent='Sending your message…';
+  try{
+    const response=await fetch('https://formsubmit.co/ajax/nirrmit.rtickoo@gmail.com',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const result=await response.json();
+    if(!response.ok||result.success===false||result.success==='false') throw new Error(result.message||'The message could not be sent.');
+    status.textContent='Submission accepted. If this is the first use, delivery starts after I confirm FormSubmit’s activation email.';
+    form.reset();
+  }catch(error){
+    status.classList.add('is-error');
+    status.textContent='Could not send your message right now. Please email nirrmit.rtickoo@gmail.com directly.';
+  }finally{
+    submitButton.disabled=false;
+    submitButton.querySelector('span').textContent='Send message';
+  }
 });
 
 </script>
