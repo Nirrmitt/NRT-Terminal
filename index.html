@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRT</title>
+<title>Nirrmit R. Tickoo | AI/ML & GenAI Engineer</title>
+<meta name="description" content="Nirrmit R. Tickoo builds applied AI/ML, NLP, GenAI, and data products with Python, FastAPI, and practical analytics." />
+<meta name="theme-color" content="#070b1a" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 
 .projects-footer {
@@ -17,7 +18,7 @@
 .view-all-btn {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background-color: #2563eb; /* Change to match your theme */
+  background: linear-gradient(135deg, var(--cyan), var(--indigo));
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
@@ -25,7 +26,7 @@
   transition: all 0.3s ease;
 }
 .view-all-btn:hover {
-  background-color: #1d4ed8;
+  background: linear-gradient(135deg, #7dd3fc, #a5b4fc);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
@@ -81,7 +82,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2rem;transition:va
 .nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px}
 nav.scrolled{background:rgba(7,11,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:64px}
 .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:3.25rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:12px}
-.logo-badge{width:38px;height:38px;background:linear-gradient(135deg, #6b7280, #9ca3af));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0}
+.logo-badge{width:38px;height:38px;background:linear-gradient(135deg,#6b7280,#9ca3af);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0}
 .nav-links{display:flex;align-items:center;gap:2rem}
 .nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;transition:var(--tr);position:relative}
 .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--cyan);transition:var(--tr)}
@@ -160,16 +161,6 @@ nav.scrolled{background:rgba(7,11,26,.92);backdrop-filter:blur(20px);border-bott
 .card-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:10px}
 .card-title i{color:var(--cyan);font-size:.9rem}
 .card-sub{font-size:.85rem;color:var(--muted);margin-bottom:22px}
-.chart-box{height:260px;position:relative}
-
-.skill-bars{display:flex;flex-direction:column;gap:16px;margin-top:8px}
-.skill-bar-item{}
-.skill-bar-top{display:flex;justify-content:space-between;margin-bottom:6px}
-.skill-bar-name{font-size:.87rem;font-weight:500}
-.skill-bar-pct{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--cyan)}
-.skill-bar-track{height:5px;background:rgba(56,189,248,.1);border-radius:3px;overflow:hidden}
-.skill-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--indigo));width:0%;transition:width 1.4s cubic-bezier(0.2,0.8,0.2,1)}
-
 .tech-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:40px}
 .tech-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 12px;text-align:center;transition:var(--tr);cursor:default;position:relative;overflow:hidden}
 .tech-item:hover{border-color:var(--border-hover);transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.35)}
@@ -238,7 +229,7 @@ nav.scrolled{background:rgba(7,11,26,.92);backdrop-filter:blur(20px);border-bott
 .c-tag{padding:4px 11px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.12);border-radius:12px;font-size:.76rem;color:#94a3b8;font-weight:500}
 .cert-foot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(56,189,248,.08);margin-top:auto}
 .cert-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.08em}
-.cert-verified{display:flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;color:var(--green)}
+.cert-verified{display:flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;color:var(--muted)}
 
 /* ── EDUCATION ── */
 .edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:52px}
@@ -253,13 +244,6 @@ nav.scrolled{background:rgba(7,11,26,.92);backdrop-filter:blur(20px);border-bott
 .edu-org i{color:var(--cyan);font-size:.8rem}
 .edu-year{font-size:.82rem;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:6px}
 .edu-year i{color:var(--indigo);font-size:.78rem}
-.gpa-wrap{margin-top:8px}
-.gpa-label{display:flex;justify-content:space-between;margin-bottom:8px}
-.gpa-text{font-size:.82rem;color:var(--muted);font-weight:500}
-.gpa-val{font-family:'DM Mono',monospace;font-size:.85rem;color:var(--gold);font-weight:700}
-.gpa-track{height:6px;background:rgba(245,158,11,.1);border-radius:3px;overflow:hidden}
-.gpa-fill{height:100%;background:linear-gradient(90deg,var(--gold),#fbbf24);border-radius:3px;width:76.4%;transition:width 1.4s cubic-bezier(0.2,0.8,0.2,1)}
-
 /* ── FOOTER ── */
 footer{background:rgba(7,11,26,.97);border-top:1px solid var(--border);padding:80px 2rem 40px;position:relative;overflow:hidden}
 footer::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.04) 0%,transparent 65%);pointer-events:none}
@@ -297,6 +281,7 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
 <body>
 
 <!-- Cursor -->
+<div class="cursor cursor-dot" id="cursorDot"></div>
 <div class="cursor cursor-ring" id="cursorRing"></div>
 
 <!-- Progress Bar -->
@@ -327,16 +312,14 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-text">
-      <div class="hero-badge"><span class="hero-badge-dot"></span>AVAILABLE FOR OPPORTUNITIES</div>
+      <div class="hero-badge"><span class="hero-badge-dot"></span>OPEN TO AI/ML & GENAI OPPORTUNITIES</div>
       <h1 class="hero-name">Nirrmit<br><span>R. Tickoo</span></h1>
       <div class="hero-role"><span id="typed-text"></span><span class="typed-cursor">|</span></div>
-      <p class="hero-bio">I operate at the intersection of "data, AI, and intelligent systems", using Python and analytical thinking to   turn complex information into clear, actionable outcomes. As an experienced "AI/LLM Analyst", I work with AI-generated outputs to evaluate quality, uncover patterns and inconsistencies, and help make intelligent systems more accurate and reliable. With a foundation in "NLP, data analytics, and AI-driven problem solving", I’m driven by the challenge of turning complex problems into "simple, scalable solutions that create real-world impact".
- Looking to turn data, AI, and LLMs into intelligent solutions that solve real-world problems and create measurable impact.
-Driven by curiosity, analytical thinking, and a builder’s mindset to simplify complexity and make AI more useful.</p>
+      <p class="hero-bio">I build practical AI and data products with Python, from semantic matching and NLP workflows to GenAI-backed APIs and interactive analytics. My focus is making systems useful and dependable: clear inputs, validated outputs, thoughtful evaluation, and honest limits.</p>
       <div class="hero-links">
         <a href="mailto:nirrmit.rtickoo@gmail.com" class="h-btn h-btn-email"><span class="h-btn-icon"><i class="fas fa-envelope"></i></span> nirrmit.rtickoo@gmail.com</a>
         <a href="https://github.com/Nirrmitt" target="_blank" class="h-btn h-btn-gh"><span class="h-btn-icon"><i class="fab fa-github"></i></span> GitHub</a>
-        <a href="https://linkedin.com/in/nirrmit-r-tickoo-680611230/" target="_blank" class="h-btn h-btn-li"><span class="h-btn-icon"><i class="fab fa-linkedin-in"></i></span> LinkedIn</a>
+        <a href="https://www.linkedin.com/in/n-r-t/" target="_blank" rel="noopener noreferrer" class="h-btn h-btn-li"><span class="h-btn-icon"><i class="fab fa-linkedin-in"></i></span> LinkedIn</a>
         <a href="tel:+919695585566" class="h-btn h-btn-ph"><span class="h-btn-icon"><i class="fas fa-phone-alt"></i></span> +91 96955 85566</a>
       </div>
          </div>
@@ -345,7 +328,7 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
       <div class="photo-tag">
         <div>
           <div class="photo-tag-name">Nirrmit R. Tickoo</div>
-          <div class="photo-tag-role">AI/ML Data Analyst</div>
+          <div class="photo-tag-role">AI/ML & GenAI Engineer</div>
         </div>
         <div class="photo-tag-dot"></div>
       </div>
@@ -357,35 +340,33 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
 <section class="section" id="skills">
   <div class="container">
     <div class="sec-label fu">Core Competencies</div>
-    <h2 class="sec-title fu fu-d1">Technical Arsenal</h2>
-    <p class="sec-sub fu fu-d2">A precision-built stack spanning data engineering, statistical modeling, and business intelligence.</p>
+    <h2 class="sec-title fu fu-d1">Technical Toolkit</h2>
+    <p class="sec-sub fu fu-d2">Tools and methods used across my machine-learning, GenAI, and analytics projects.</p>
     <div class="skills-wrap">
       <div class="glass-card fu fu-d1">
-        <div class="card-title"><i class="fas fa-radar"></i>Proficiency Radar</div>
-        <div class="card-sub">Python · SQL · Pandas/NumPy · Data Cleaning · Modeling · Visualization</div>
-        <div class="chart-box"><canvas id="skillsRadar"></canvas></div>
+        <div class="card-title"><i class="fas fa-brain"></i>AI, ML & NLP</div>
+        <div class="card-sub">Semantic matching, text processing, and model-backed applications</div>
+        <div class="proj-tags"><span class="p-tag">SentenceTransformers</span><span class="p-tag">spaCy</span><span class="p-tag">scikit-learn</span><span class="p-tag">OpenRouter</span><span class="p-tag">OpenAI-compatible APIs</span></div>
       </div>
       <div class="glass-card fu fu-d2">
-        <div class="card-title"><i class="fas fa-layer-group"></i>Skill Proficiency</div>
-        <div class="card-sub">Self-assessed competency across core technical areas</div>
-        <div class="skill-bars">
-          <div class="skill-bar-item"><div class="skill-bar-top"><span class="skill-bar-name">Python (Pandas, NumPy, Scikit-learn)</span><span class="skill-bar-pct">92%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-w="92"></div></div></div>
-          <div class="skill-bar-item"><div class="skill-bar-top"><span class="skill-bar-name">SQL & MySQL</span><span class="skill-bar-pct">85%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-w="85"></div></div></div>
-          <div class="skill-bar-item"><div class="skill-bar-top"><span class="skill-bar-name">Data Cleaning & EDA</span><span class="skill-bar-pct">94%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-w="94"></div></div></div>
-          <div class="skill-bar-item"><div class="skill-bar-top"><span class="skill-bar-name">Statistical Modeling</span><span class="skill-bar-pct">82%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-w="82"></div></div></div>
-          <div class="skill-bar-item"><div class="skill-bar-top"><span class="skill-bar-name">Power BI Dashboards</span><span class="skill-bar-pct">80%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-w="80"></div></div></div>
-          <div class="skill-bar-item"><div class="skill-bar-top"><span class="skill-bar-name">Machine Learning</span><span class="skill-bar-pct">78%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-w="78"></div></div></div>
-        </div>
+        <div class="card-title"><i class="fas fa-code"></i>Backend & Data</div>
+        <div class="card-sub">Services, structured data, validation, and storage</div>
+        <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">SQL</span><span class="p-tag">FastAPI</span><span class="p-tag">PostgreSQL</span><span class="p-tag">SQLite</span><span class="p-tag">SQLAlchemy</span><span class="p-tag">Pydantic</span></div>
+      </div>
+      <div class="glass-card fu fu-d1">
+        <div class="card-title"><i class="fas fa-chart-line"></i>Analytics & Interfaces</div>
+        <div class="card-sub">Exploration, metrics, dashboards, and user-facing tools</div>
+        <div class="proj-tags"><span class="p-tag">Pandas</span><span class="p-tag">NumPy</span><span class="p-tag">Plotly</span><span class="p-tag">Streamlit</span><span class="p-tag">Power BI</span><span class="p-tag">MySQL</span></div>
+      </div>
+      <div class="glass-card fu fu-d2">
+        <div class="card-title"><i class="fas fa-gears"></i>Engineering Workflow</div>
+        <div class="card-sub">Reproducible local development and automated workflows</div>
+        <div class="proj-tags"><span class="p-tag">Git</span><span class="p-tag">Docker Compose</span><span class="p-tag">GitHub Actions</span><span class="p-tag">pytest</span><span class="p-tag">Jupyter</span></div>
       </div>
     </div>
     <div class="glass-card fu" style="margin-top:24px">
-      <div class="card-title"><i class="fas fa-chart-bar"></i>Analytics Focus Areas</div>
-      <div class="card-sub">Proficiency distribution across key analytical methodologies</div>
-      <div class="chart-box"><canvas id="focusBar"></canvas></div>
-    </div>
-    <div class="glass-card fu" style="margin-top:24px">
-      <div class="card-title"><i class="fas fa-tags"></i>AI/LLM Data Annotation & QA</div>
-      <div class="card-sub">Skills developed reviewing and evaluating AI training data</div>
+      <div class="card-title"><i class="fas fa-tags"></i>AI Data Quality & Evaluation</div>
+      <div class="card-sub">Experience reviewing and evaluating AI training data</div>
       <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
         <div><strong style="color:var(--cyan)">Annotation:</strong> Text, Image & Video Labeling • Object Detection • Semantic Segmentation • Object Tracking</div>
         <div><strong style="color:var(--cyan)">Quality:</strong> Rubric-Based QA • High-Volume/High-Accuracy Labeling • Error Identification & Correction</div>
@@ -396,12 +377,12 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
       <div class="tech-item"><i class="fas fa-database" style="color:#38bdf8"></i><span>SQL</span></div>
       <div class="tech-item"><i class="fas fa-chart-bar" style="color:#f59e0b"></i><span>Power BI</span></div>
       <div class="tech-item"><i class="fas fa-file-excel" style="color:#10b981"></i><span>Excel</span></div>
-      <div class="tech-item"><i class="fas fa-brain" style="color:#a78bfa"></i><span>ML</span></div>
-      <div class="tech-item"><i class="fas fa-broom" style="color:#fb7185"></i><span>Data Cleaning</span></div>
+      <div class="tech-item"><i class="fas fa-brain" style="color:#a78bfa"></i><span>NLP</span></div>
+      <div class="tech-item"><i class="fas fa-server" style="color:#fb7185"></i><span>FastAPI</span></div>
       <div class="tech-item"><i class="fab fa-git-alt" style="color:#f97316"></i><span>Git</span></div>
-      <div class="tech-item"><i class="fas fa-code" style="color:#60a5fa"></i><span>Jupyter</span></div>
-      <div class="tech-item"><i class="fas fa-chart-line" style="color:#34d399"></i><span>EDA</span></div>
-      <div class="tech-item"><i class="fas fa-project-diagram" style="color:#818cf8"></i><span>Pipelines</span></div>
+      <div class="tech-item"><i class="fas fa-database" style="color:#60a5fa"></i><span>PostgreSQL</span></div>
+      <div class="tech-item"><i class="fas fa-chart-line" style="color:#34d399"></i><span>Plotly</span></div>
+      <div class="tech-item"><i class="fas fa-project-diagram" style="color:#818cf8"></i><span>GenAI APIs</span></div>
       <div class="tech-item"><i class="fas fa-table" style="color:#fbbf24"></i><span>Pandas</span></div>
       <div class="tech-item"><i class="fas fa-calculator" style="color:#38bdf8"></i><span>NumPy</span></div>
     </div>
@@ -413,7 +394,7 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
   <div class="container">
     <div class="sec-label fu">Work History</div>
     <h2 class="sec-title fu fu-d1">Professional Experience</h2>
-    <p class="sec-sub fu fu-d2">Building real-world analytics expertise across freelance and leadership roles.</p>
+    <p class="sec-sub fu fu-d2">AI data quality, freelance analytics, and student leadership experience.</p>
     <div class="timeline">
       <div class="tl-item fu">
         <div class="tl-dot"></div>
@@ -429,10 +410,9 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
             </div>
           </div>
           <ul class="tl-list">
-            <li>Reviewed and annotated written content, images, videos, and digital documents with precision, applying detailed task rubrics and quality guidelines to produce high-accuracy AI training datasets.</li>
-            <li>Applied strong English reading comprehension and analytical judgment to identify inconsistencies, errors, and edge cases across large volumes of text and multimodal content, maintaining quality at scale.</li>
-            <li>Demonstrated integrity and reliability handling sensitive data tasks, ensuring outputs are accurate, consistent, and fully aligned with client specifications.</li>
-            <li>Contributed to client-facing AI/LLM annotation and evaluation tasks on a production platform, achieving a <strong style="color:var(--cyan)">4.25/5 quality score</strong>.</li>
+            <li>Reviewed and annotated text, images, videos, and digital documents against task rubrics for AI training and evaluation workflows.</li>
+            <li>Identified inconsistencies, edge cases, and annotation errors across multimodal tasks while following client quality guidelines.</li>
+            <li>Earned a <strong style="color:var(--cyan)">4.25/5 platform quality score</strong> on client-facing annotation and evaluation work.</li>
           </ul>
         </div>
       </div>
@@ -450,9 +430,9 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
             </div>
           </div>
           <ul class="tl-list">
-            <li>Applied statistical and regression models in Python to identify relationships between business variables and generate actionable insights.</li>
-            <li>Performed end-to-end data cleaning, preprocessing, and exploratory analysis using Pandas and NumPy across diverse project datasets.</li>
-            <li>Developed complex SQL queries using joins, subqueries, window functions, and aggregations to extract insights and support data-driven analysis.</li>
+            <li>Cleaned, prepared, and explored project datasets using Python, Pandas, and NumPy.</li>
+            <li>Used statistical and regression analysis to examine relationships between business variables.</li>
+            <li>Wrote SQL with joins, subqueries, window functions, and aggregations to support analysis.</li>
           </ul>
         </div>
       </div>
@@ -484,122 +464,157 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
 <section class="section" id="projects" style="padding-top:0">
   <div class="container">
     <div class="sec-label fu">Featured Work</div>
-    <h2 class="sec-title fu fu-d1">Projects</h2>
-    <p class="sec-sub fu fu-d2">Data analysis, machine learning, and AI engineering projects built with precision.</p>
+    <h2 class="sec-title fu fu-d1">Selected Projects</h2>
+    <p class="sec-sub fu fu-d2">Applied AI, NLP, data engineering, and analytics projects with clear scope and working source.</p>
     <div class="filter-row fu">
       <button class="f-btn active" data-filter="all">All Projects</button>
-      <button class="f-btn" data-filter="data">Data Analytics</button>
-      <button class="f-btn" data-filter="ai">AI / ML</button>
-      <button class="f-btn" data-filter="fullstack">Full Stack</button>
+      <button class="f-btn" data-filter="genai">GenAI</button>
+      <button class="f-btn" data-filter="ml">Applied ML / NLP</button>
+      <button class="f-btn" data-filter="data">Data & BI</button>
+      <button class="f-btn" data-filter="api">APIs & Apps</button>
     </div>
     <div class="projects-grid">
+      <a href="https://github.com/Nirrmitt/Sense-your-data" target="_blank" rel="noopener noreferrer" class="proj-card fu fu-d1" data-category="genai api">
+        <div class="proj-band" style="background:linear-gradient(90deg,#38bdf8,#818cf8)"></div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <div class="proj-icon" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.2);color:#38bdf8"><i class="fas fa-comments"></i></div>
+            <div class="proj-badges"><span class="p-badge" style="background:rgba(56,189,248,.12);color:#38bdf8;border:1px solid rgba(56,189,248,.25)">GenAI</span><span class="p-badge" style="background:rgba(129,140,248,.12);color:#a5b4fc;border:1px solid rgba(129,140,248,.25)">API + UI</span></div>
+          </div>
+          <div class="proj-num">01</div>
+          <div class="proj-title">RetailIQ — Ask Your Data</div>
+          <div class="proj-type" style="color:#38bdf8"><i class="fas fa-wand-magic-sparkles"></i>GenAI · Text-to-SQL</div>
+          <div class="proj-desc">Turns retail questions into PostgreSQL SELECT-query previews using OpenRouter or OpenAI-compatible models. FastAPI validates and applies lightweight SQL checks; Streamlit presents the result. Queries are not executed, and RAG is not implemented.</div>
+        </div>
+        <div class="proj-footer">
+          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">OpenRouter</span><span class="p-tag">FastAPI</span><span class="p-tag">PostgreSQL</span><span class="p-tag">Streamlit</span></div>
+          <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View source</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
+        </div>
       </a>
-      <a href="https://github.com/Nirrmitt/Automated-KPI-Extraction--Analytics-Dashboard" target="_blank" class="proj-card fu fu-d1" data-category="ai data">
+
+      <a href="https://github.com/Nirrmitt/Automated-KPI-Extraction--Analytics-Dashboard" target="_blank" rel="noopener noreferrer" class="proj-card fu fu-d1" data-category="data">
         <div class="proj-band" style="background:linear-gradient(90deg,#fbbf24,#f59e0b)"></div>
         <div class="proj-body">
           <div class="proj-top">
             <div class="proj-icon" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.2);color:#fbbf24"><i class="fas fa-tachometer-alt"></i></div>
             <div class="proj-badges">
-              <span class="p-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)">⭐ Featured</span>
-              <span class="p-badge" style="background:rgba(56,189,248,.12);color:#38bdf8;border:1px solid rgba(56,189,248,.25)">Live Demo</span>
+              <span class="p-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)">KPI pipeline</span>
+              <span class="p-badge" style="background:rgba(56,189,248,.12);color:#38bdf8;border:1px solid rgba(56,189,248,.25)">Rule-based</span>
             </div>
           </div>
-          <div class="proj-num">01</div>
+          <div class="proj-num">02</div>
           <div class="proj-title">Automated KPI Extraction & Analytics Dashboard</div>
           <div class="proj-type" style="color:#fbbf24"><i class="fas fa-cogs"></i>End-to-End Data Pipeline · BI Dashboard</div>
-          <div class="proj-desc">AI-powered pipeline that ingests raw business documents, extracts structured KPIs via Pydantic-validated regex schemas, persists data idempotently to SQLite, and renders interactive Plotly dashboards in Streamlit. Features MoM analytics, cross-filtering, and zero external API dependencies.</div>
+          <div class="proj-desc">A document-to-dashboard pipeline that reads PDF and text reports, extracts revenue, churn, and NPS with deterministic rules, validates records with Pydantic, and stores them idempotently in SQLite. The Streamlit/Plotly dashboard includes date filters and CSV export; KPI extraction is not LLM-based.</div>
         </div>
         <div class="proj-footer">
-          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">Streamlit</span><span class="p-tag">Plotly</span><span class="p-tag">Pydantic</span><span class="p-tag">SQLite</span><span class="p-tag">Pandas</span></div>
+          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">Regex</span><span class="p-tag">Pydantic</span><span class="p-tag">SQLite</span><span class="p-tag">Plotly</span></div>
           <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View on GitHub</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
         </div>
       </a>
-<a href="https://github.com/Nirrmitt/Automated-RP" target="_blank" class="proj-card fu fu-d1" data-category="ai data">
+<a href="https://github.com/Nirrmitt/Automated-Retail-Platform" target="_blank" rel="noopener noreferrer" class="proj-card fu fu-d1" data-category="data">
   <div class="proj-band" style="background:linear-gradient(90deg,#818cf8,#a78bfa)"></div>
   <div class="proj-body">
     <div class="proj-top">
       <div class="proj-icon" style="background:rgba(129,140,248,.12);border:1px solid rgba(129,140,248,.2);color:#818cf8"><i class="fas fa-robot"></i></div>
-     <div class="proj-badges"><span class="p-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)">⭐ Featured</span></div>
-      <div class="proj-badges"><span class="p-badge" style="background:rgba(129,140,248,.12);color:#818cf8;border:1px solid rgba(129,140,248,.25)">⭐ Automation</span></div>
+    <div class="proj-badges"><span class="p-badge" style="background:rgba(129,140,248,.12);color:#818cf8;border:1px solid rgba(129,140,248,.25)">Automation</span></div>
     </div>
-    <div class="proj-num">02</div>
-    <div class="proj-title">Automated Reporting Pipeline</div>
-    <div class="proj-type" style="color:#818cf8"><i class="fas fa-cogs"></i>End-to-End Automation</div>
-    <div class="proj-desc">Automated reporting pipeline that streamlines data extraction, transformation, and report generation workflows. Reduces manual effort through scripted automation, delivering consistent, scheduled insights with minimal human intervention.</div>
+    <div class="proj-num">03</div>
+    <div class="proj-title">Automated Retail Analytics Reporter</div>
+    <div class="proj-type" style="color:#818cf8"><i class="fas fa-file-pdf"></i>ETL · KPI Reporting · Delivery</div>
+    <div class="proj-desc">Automates retail data preparation, KPI calculation, chart and PDF report creation, and scheduled stakeholder delivery. The repository documents email delivery and GitHub Actions scheduling.</div>
   </div>
   <div class="proj-footer">
-    <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">Automation</span><span class="p-tag">Pandas</span><span class="p-tag">Reporting</span></div>
+    <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">Pandas</span><span class="p-tag">PDF</span><span class="p-tag">GitHub Actions</span></div>
     <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View on GitHub</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
   </div>
 </a>
-      <a href="https://github.com/Nirrmitt/Retail-AP" target="_blank" class="proj-card fu" data-category="fullstack data">
+      <a href="https://github.com/Nirrmitt/Retail-Analytics-Platform" target="_blank" rel="noopener noreferrer" class="proj-card fu" data-category="api data">
         <div class="proj-band" style="background:linear-gradient(90deg,#38bdf8,#818cf8)"></div>
         <div class="proj-body">
           <div class="proj-top">
             <div class="proj-icon" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.2);color:#38bdf8"><i class="fas fa-store"></i></div>
             <div class="proj-badges"><span class="p-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)">⭐ Featured</span></div>
           </div>
-          <div class="proj-num">03</div>
+          <div class="proj-num">04</div>
           <div class="proj-title">Retail Analytics Platform</div>
-          <div class="proj-type" style="color:#38bdf8"><i class="fas fa-chart-line"></i>Full-Stack Analytics Dashboard</div>
-          <div class="proj-desc">End-to-end retail analytics system with Python data pipeline, SQL backend, and interactive Power BI dashboards. Tracks sales KPIs, inventory turnover, and customer segmentation with automated reporting workflows.</div>
+          <div class="proj-type" style="color:#38bdf8"><i class="fas fa-chart-line"></i>Async API · Retail Analytics</div>
+          <div class="proj-desc">A simulated transaction platform with FastAPI ingestion, an async PostgreSQL backend, KPI and sales endpoints, and a Streamlit/Plotly dashboard. Includes a transaction simulator for exercising the ingestion flow.</div>
         </div>
         <div class="proj-footer">
-          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">SQL</span><span class="p-tag">Power BI</span><span class="p-tag">Pandas</span></div>
+          <div class="proj-tags"><span class="p-tag">FastAPI</span><span class="p-tag">asyncpg</span><span class="p-tag">PostgreSQL</span><span class="p-tag">Streamlit</span><span class="p-tag">Plotly</span></div>
           <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View on GitHub</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
         </div>
       </a>
 
-      <a href="https://github.com/Nirrmitt/AI-Resume-Analyzer-plus-EDA" target="_blank" class="proj-card fu fu-d1" data-category="ai data">
+      <a href="https://github.com/Nirrmitt/AI-Resume-Analyzer-plus-EDA" target="_blank" rel="noopener noreferrer" class="proj-card fu fu-d1" data-category="ml nlp">
         <div class="proj-band" style="background:linear-gradient(90deg,#a78bfa,#818cf8)"></div>
         <div class="proj-body">
           <div class="proj-top">
             <div class="proj-icon" style="background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.2);color:#a78bfa"><i class="fas fa-file-alt"></i></div>
             <div class="proj-badges"><span class="p-badge" style="background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25)">AI</span></div>
           </div>
-          <div class="proj-num">04</div>
+          <div class="proj-num">05</div>
           <div class="proj-title">AI Resume Analyzer + EDA</div>
-          <div class="proj-type" style="color:#a78bfa"><i class="fas fa-robot"></i>NLP & Exploratory Analysis</div>
-          <div class="proj-desc">Intelligent resume parsing system using NLP to extract skills, experience, and keywords. Includes comprehensive EDA of job market data with trend analysis and compatibility scoring algorithms.</div>
+          <div class="proj-type" style="color:#a78bfa"><i class="fas fa-robot"></i>Semantic Matching · NLP</div>
+          <div class="proj-desc">Compares resumes with job descriptions using SentenceTransformer similarity plus spaCy/rule-based extraction and weighted skill and experience signals. Supports PDF, DOCX, and TXT, and returns match breakdowns, missing skills, and feedback.</div>
         </div>
         <div class="proj-footer">
-          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">NLP</span><span class="p-tag">Scikit-learn</span><span class="p-tag">EDA</span></div>
+          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">SentenceTransformers</span><span class="p-tag">spaCy</span><span class="p-tag">Streamlit</span></div>
           <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View on GitHub</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
         </div>
       </a>
 
-      <a href="https://github.com/Nirrmitt" target="_blank" class="proj-card fu fu-d2" data-category="data">
+      <a href="https://github.com/Nirrmitt/Case-Study-Landslide-Data-Analysis" target="_blank" rel="noopener noreferrer" class="proj-card fu fu-d2" data-category="data">
         <div class="proj-band" style="background:linear-gradient(90deg,#34d399,#10b981)"></div>
         <div class="proj-body">
           <div class="proj-top">
             <div class="proj-icon" style="background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.2);color:#34d399"><i class="fas fa-map-marked-alt"></i></div>
             <div class="proj-badges"><span class="p-badge" style="background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)">Hot</span></div>
           </div>
-          <div class="proj-num">05</div>
-          <div class="proj-title">Crime Data EDA- India</div>
-          <div class="proj-type" style="color:#34d399"><i class="fas fa-search"></i>Geospatial Analysis</div>
-          <div class="proj-desc">Deep dive into India crime statistics using spatial analysis, temporal trends, and trigger mapping. Reveals patterns across regions with correlation matrices, outlier detection, and dynamic visualizations.</div>
+          <div class="proj-num">06</div>
+          <div class="proj-title">Landslide Data Analysis</div>
+          <div class="proj-type" style="color:#34d399"><i class="fas fa-mountain"></i>Environmental Data · EDA</div>
+          <div class="proj-desc">Explores NASA Global Landslide Catalog data with Python: data cleaning, event trends across time and geography, trigger analysis, outlier exploration, and visual summaries.</div>
         </div>
         <div class="proj-footer">
-          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">GeoPandas</span><span class="p-tag">Seaborn</span><span class="p-tag">Matplotlib</span></div>
+          <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">Pandas</span><span class="p-tag">NumPy</span><span class="p-tag">Seaborn</span><span class="p-tag">Matplotlib</span></div>
           <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View on GitHub</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
         </div>
       </a>
 
-      <a href="https://github.com/Nirrmitt" target="_blank" class="proj-card fu" data-category="ai data">
+      <a href="https://github.com/Nirrmitt/Hospital-Mortality-Prediction-" target="_blank" rel="noopener noreferrer" class="proj-card fu" data-category="data">
         <div class="proj-band" style="background:linear-gradient(90deg,#fb7185,#f43f5e)"></div>
         <div class="proj-body">
           <div class="proj-top">
             <div class="proj-icon" style="background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.2);color:#fb7185"><i class="fas fa-heartbeat"></i></div>
             <div class="proj-badges"><span class="p-badge" style="background:rgba(251,113,133,.12);color:#fb7185;border:1px solid rgba(251,113,133,.25)">AI</span></div>
           </div>
-          <div class="proj-num">06 </div>
-          <div class="proj-title">Hospital Mortality Prediction</div>
-          <div class="proj-type" style="color:#fb7185"><i class="fas fa-stethoscope"></i>Classification Pipeline</div>
-          <div class="proj-desc">Applied Logistic Regression and tree-based models for hospital mortality prediction. Built a full data analysis pipeline using Excel, MySQL, and Power BI to clean healthcare data and analyze patient outcome factors.</div>
+          <div class="proj-num">07</div>
+          <div class="proj-title">Hospital Outcomes: SQL & Tableau</div>
+          <div class="proj-type" style="color:#fb7185"><i class="fas fa-stethoscope"></i>Healthcare Analytics Case Study</div>
+          <div class="proj-desc">SQL exploration and Tableau visualization of patient outcome patterns in a public hospital dataset. This repository is a BI case study, not a trained mortality-prediction model.</div>
         </div>
         <div class="proj-footer">
-          <div class="proj-tags"><span class="p-tag">Excel</span><span class="p-tag">MySQL</span><span class="p-tag">Power BI</span><span class="p-tag">Logistic Regression</span></div>
+          <div class="proj-tags"><span class="p-tag">MySQL</span><span class="p-tag">SQL</span><span class="p-tag">Tableau</span><span class="p-tag">Healthcare Analytics</span></div>
+          <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View on GitHub</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
+        </div>
+      </a>
+
+      <a href="https://github.com/Nirrmitt/Data-Cleaning-Exploratory-Data-Analysis" target="_blank" rel="noopener noreferrer" class="proj-card fu fu-d1" data-category="data">
+        <div class="proj-band" style="background:linear-gradient(90deg,#f59e0b,#fb7185)"></div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <div class="proj-icon" style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.2);color:#f59e0b"><i class="fas fa-table"></i></div>
+            <div class="proj-badges"><span class="p-badge" style="background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25)">SQL</span></div>
+          </div>
+          <div class="proj-num">08</div>
+          <div class="proj-title">Layoffs Data Cleaning & EDA</div>
+          <div class="proj-type" style="color:#f59e0b"><i class="fas fa-magnifying-glass"></i>MySQL · Data Quality</div>
+          <div class="proj-desc">A SQL workflow for cleaning and exploring a public layoffs dataset, using staging tables, duplicate detection, standardization, missing-value handling, CTEs, and window functions.</div>
+        </div>
+        <div class="proj-footer">
+          <div class="proj-tags"><span class="p-tag">MySQL</span><span class="p-tag">CTEs</span><span class="p-tag">Window Functions</span><span class="p-tag">EDA</span></div>
           <div class="proj-link-row"><span class="proj-gh"><i class="fab fa-github"></i>View on GitHub</span><div class="proj-arrow"><i class="fas fa-arrow-right"></i></div></div>
         </div>
       </a>
@@ -618,42 +633,42 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
   <div class="container">
     <div class="sec-label fu">Credentials</div>
     <h2 class="sec-title fu fu-d1">Certifications</h2>
-    <p class="sec-sub fu fu-d2">Verified credentials across data analytics, machine learning, and business intelligence.</p>
+    <p class="sec-sub fu fu-d2">Selected courses and professional training in analytics, machine learning, and software development.</p>
     <div class="cert-grid">
 
       <div class="cert-card fu">
         <div class="cert-top"><div class="cert-icon"><i class="fas fa-university"></i></div><div><div class="cert-title">Business Analytics Specialization</div><div class="cert-issuer">University of Pennsylvania: Wharton</div></div></div>
         <div class="cert-desc">A rigorous 5-course specialization from Wharton covering customer analytics, operations analytics, people analytics, and accounting analytics. Developed skills to translate complex data into actionable business decisions using statistical models.</div>
         <div class="cert-tags"><span class="c-tag">Customer Analytics</span><span class="c-tag">Operations</span><span class="c-tag">People Analytics</span><span class="c-tag">Regression</span></div>
-        <div class="cert-foot"><span class="cert-num">CERT 01 / 05</span><span class="cert-verified"><i class="fas fa-check-circle"></i> Verified</span></div>
+        <div class="cert-foot"><span class="cert-num">COURSE 01</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu fu-d1">
         <div class="cert-top"><div class="cert-icon"><i class="fas fa-chart-pie"></i></div><div><div class="cert-title">Operations Analysis</div><div class="cert-issuer">Wharton / Coursera</div></div></div>
         <div class="cert-desc">Deep-dive into three analytical pillars: customer behaviour modelling, workforce analytics, and financial metrics. Learned to identify operational bottlenecks, measure employee performance, and interpret accounting data for strategic improvements.</div>
         <div class="cert-tags"><span class="c-tag">Customer Modelling</span><span class="c-tag">Workforce Analytics</span><span class="c-tag">Financial Metrics</span></div>
-        <div class="cert-foot"><span class="cert-num">CERT 02 / 05</span><span class="cert-verified"><i class="fas fa-check-circle"></i> Verified</span></div>
+        <div class="cert-foot"><span class="cert-num">COURSE 02</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu fu-d2">
         <div class="cert-top"><div class="cert-icon"><i class="fas fa-chart-bar"></i></div><div><div class="cert-title">Power BI Dashboards</div><div class="cert-issuer">Microsoft / Udemy</div></div></div>
         <div class="cert-desc">Hands-on certification in building AI-powered interactive dashboards. Covered DAX formulas, data modelling, drill-through reports, and AI visuals including Key Influencers and Smart Narratives. Built end-to-end reporting solutions with live data sources.</div>
         <div class="cert-tags"><span class="c-tag">DAX</span><span class="c-tag">Data Modelling</span><span class="c-tag">AI Visuals</span><span class="c-tag">Reporting</span></div>
-        <div class="cert-foot"><span class="cert-num">CERT 03 / 05</span><span class="cert-verified"><i class="fas fa-check-circle"></i> Verified</span></div>
+        <div class="cert-foot"><span class="cert-num">COURSE 03</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu">
         <div class="cert-top"><div class="cert-icon"><i class="fas fa-brain"></i></div><div><div class="cert-title">Data Science & Machine Learning</div><div class="cert-issuer">Coursera / IBM</div></div></div>
         <div class="cert-desc">Comprehensive program spanning the full data science pipeline: EDA, feature engineering, supervised and unsupervised ML models. Also covered Generative AI fundamentals including transformer architectures and prompt engineering.</div>
         <div class="cert-tags"><span class="c-tag">Supervised ML</span><span class="c-tag">Feature Engineering</span><span class="c-tag">Generative AI</span><span class="c-tag">Neural Networks</span></div>
-        <div class="cert-foot"><span class="cert-num">CERT 04 / 05</span><span class="cert-verified"><i class="fas fa-check-circle"></i> Verified</span></div>
+        <div class="cert-foot"><span class="cert-num">COURSE 04</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu fu-d1">
         <div class="cert-top"><div class="cert-icon"><i class="fab fa-python"></i></div><div><div class="cert-title">OOP in Python</div><div class="cert-issuer">Coursera / Duke University</div></div></div>
         <div class="cert-desc">Mastered OOP principles in Python: classes, inheritance, polymorphism, encapsulation, and abstraction. Applied concepts to design reusable, modular code structures for scalable data pipelines and analytics tools.</div>
         <div class="cert-tags"><span class="c-tag">Classes & Objects</span><span class="c-tag">Inheritance</span><span class="c-tag">Polymorphism</span><span class="c-tag">Design Patterns</span></div>
-        <div class="cert-foot"><span class="cert-num">CERT 05 / 05</span><span class="cert-verified"><i class="fas fa-check-circle"></i> Verified</span></div>
+        <div class="cert-foot"><span class="cert-num">COURSE 05</span><span class="cert-verified">Coursework</span></div>
       </div>
 
     </div>
@@ -665,7 +680,7 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
   <div class="container">
     <div class="sec-label fu">Academic Background</div>
     <h2 class="sec-title fu fu-d1">Education</h2>
-    <p class="sec-sub fu fu-d2">Solid academic foundation in Computer Science with specialization in data & analytics.</p>
+    <p class="sec-sub fu fu-d2">Computer Science foundation, complemented by work in AI, machine learning, and analytics.</p>
     <div class="edu-grid">
       <div class="edu-card fu">
         <div class="edu-card-glow"></div>
@@ -703,17 +718,15 @@ Driven by curiosity, analytical thinking, and a builder’s mindset to simplify 
 <footer id="contact">
   <div class="footer-inner">
     <div class="footer-logo">Let's Connect</div>
-    <div class="footer-tagline">Open to Data Analytics, Machine Learning & Business Intelligence roles.</div>
+    <div class="footer-tagline">Open to AI/ML, GenAI, NLP, and applied data product opportunities.</div>
     <div class="footer-links">
       <a href="mailto:nirrmit.rtickoo@gmail.com" class="h-btn h-btn-email"><span class="h-btn-icon"><i class="fas fa-envelope"></i></span> nirrmit.rtickoo@gmail.com</a>
       <a href="https://github.com/Nirrmitt" target="_blank" class="h-btn h-btn-gh"><span class="h-btn-icon"><i class="fab fa-github"></i></span> GitHub</a>
-      <a href="https://linkedin.com/in/nirrmit-r-tickoo-680611230/" target="_blank" class="h-btn h-btn-li"><span class="h-btn-icon"><i class="fab fa-linkedin-in"></i></span> LinkedIn</a>
+      <a href="https://www.linkedin.com/in/n-r-t/" target="_blank" rel="noopener noreferrer" class="h-btn h-btn-li"><span class="h-btn-icon"><i class="fab fa-linkedin-in"></i></span> LinkedIn</a>
       <a href="tel:+919695585566" class="h-btn h-btn-ph"><span class="h-btn-icon"><i class="fas fa-phone-alt"></i></span>+91 96955 85566</a>
     </div>
-<div class="footer-divider"></div>
-    <blockquote style="max-width:640px;margin:0 auto 28px;font-family:'DM Sans',sans-serif;font-style:italic;font-size:1rem;line-height:1.7;color:var(--muted);text-align:center;border:none">
-      "Physics, AI, and Neuroscience seem to point toward a 'Universal Mind,' echoing millennia-old philosophies of Panpsychism and Vedanta."
- </blockquote>
+    <div class="footer-divider"></div>
+    <p class="footer-tagline">Let’s build thoughtful AI and data products that solve real problems.</p>
     <div class="footer-divider"></div>
     <div class="footer-copy">&copy; 2026 <span>Nirrmit R. Tickoo</span></div>
   </div>
@@ -761,7 +774,7 @@ function drawParts(){
 drawParts();
 
 // ── Typing Effect ──
-const roles=['AI/LLM Analyst','Statistical Modeler','Data Analytics Engineer','Python & SQL Expert','EDA Specialist', 'Freelancer'];
+const roles=['AI/ML & GenAI Engineer','Applied Machine Learning','NLP & Semantic Matching','Python APIs & AI Products','Data Pipelines & Analytics'];
 let ri=0,ci=0,del=false;const el=document.getElementById('typed-text');
 (function type(){
   const r=roles[ri];
@@ -773,23 +786,6 @@ let ri=0,ci=0,del=false;const el=document.getElementById('typed-text');
 // ── Intersection Observer ──
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}})},{threshold:.12});
 document.querySelectorAll('.fu').forEach(el=>obs.observe(el));
-
-// ── Skill Bars ──
-const barObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.skill-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');barObs.unobserve(e.target)}})},{threshold:.3});
-document.querySelectorAll('.skill-bars').forEach(el=>barObs.observe(el));
-
-// ── GPA Bar ──
-const gpaObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.querySelector('.gpa-fill').style.width='76.4%';gpaObs.unobserve(e.target)}})},{threshold:.5});
-document.querySelectorAll('.gpa-wrap').forEach(el=>gpaObs.observe(el));
-
-// ── Counter Animation ──
-function animCount(el,target,dec=0){
-  const dur=1800,start=performance.now();
-  (function step(now){const p=Math.min((now-start)/dur,1),ease=1-Math.pow(1-p,4),val=(target*ease);
-  el.textContent=dec?val.toFixed(dec):Math.round(val);if(p<1)requestAnimationFrame(step)})(performance.now());
-}
-const cntObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('[data-target]').forEach(n=>{animCount(n,+n.dataset.target,+(n.dataset.dec||0))});cntObs.unobserve(e.target)}})},{threshold:.5});
-document.querySelectorAll('.hero-stats').forEach(el=>cntObs.observe(el));
 
 // ── Project Filter ──
 document.querySelectorAll('.f-btn').forEach(btn=>{
@@ -803,12 +799,6 @@ document.querySelectorAll('.f-btn').forEach(btn=>{
   });
 });
 
-// ── Charts ──
-Chart.defaults.font.family="'DM Sans',sans-serif";Chart.defaults.color='#64748b';Chart.defaults.animation.duration=1600;Chart.defaults.plugins.legend.display=false;
-
-new Chart(document.getElementById('skillsRadar'),{type:'radar',data:{labels:['Python','SQL','Pandas/NumPy','Data Cleaning','Stat Modeling','Visualization'],datasets:[{data:[92,85,88,94,82,86],backgroundColor:'rgba(56,189,248,.12)',borderColor:'#38bdf8',pointBackgroundColor:'#38bdf8',pointBorderColor:'#070b1a',pointRadius:5,pointHoverRadius:8}]},options:{scales:{r:{beginAtZero:true,max:100,ticks:{stepSize:20,display:false},grid:{color:'rgba(56,189,248,.1)'},angleLines:{color:'rgba(56,189,248,.12)'},pointLabels:{font:{size:12,weight:'600'},color:'#f0f4ff'}}},plugins:{tooltip:{backgroundColor:'rgba(7,11,26,.95)',padding:14,bodyFont:{size:13},borderColor:'rgba(56,189,248,.25)',borderWidth:1,displayColors:false}}}});
-
-new Chart(document.getElementById('focusBar'),{type:'bar',data:{labels:['EDA','Regression','Data Cleaning','Hypothesis Testing','Dashboarding'],datasets:[{data:[90,85,95,78,82],backgroundColor:['#38bdf8','#818cf8','#a78bfa','#34d399','#f59e0b'],borderRadius:8,borderSkipped:false,hoverBackgroundColor:['#7dd3fc','#a5b4fc','#c4b5fd','#6ee7b7','#fcd34d']}]},options:{scales:{y:{beginAtZero:true,max:100,grid:{color:'rgba(56,189,248,.07)'},ticks:{stepSize:20,color:'#64748b'}},x:{grid:{display:false},ticks:{color:'#64748b'}}},plugins:{tooltip:{backgroundColor:'rgba(7,11,26,.95)',padding:14,borderColor:'rgba(56,189,248,.25)',borderWidth:1}}}});
 </script>
 </body>
 </html>
