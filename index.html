@@ -163,10 +163,26 @@ nav.scrolled{background:rgba(7,11,26,.92);backdrop-filter:blur(20px);border-bott
 .card-sub{font-size:.85rem;color:var(--muted);margin-bottom:22px}
 .tech-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:40px}
 .tech-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 12px;text-align:center;transition:var(--tr);cursor:default;position:relative;overflow:hidden}
+.tech-item{width:100%;font:inherit;color:var(--text);cursor:pointer}
 .tech-item:hover{border-color:var(--border-hover);transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.35)}
 .tech-item:hover i{transform:scale(1.18)}
 .tech-item i{font-size:1.7rem;margin-bottom:10px;display:block;transition:transform .3s ease}
 .tech-item span{font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.02em;display:block}
+.skill-chip{appearance:none;border:1px solid rgba(56,189,248,.15);font:inherit;cursor:pointer}
+.skill-chip:hover,.skill-chip:focus-visible{color:var(--cyan);border-color:var(--cyan);background:rgba(56,189,248,.14);outline:none}
+.skill-chip:focus-visible,.tech-item:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.skill-popover[hidden]{display:none}
+.skill-popover{position:fixed;right:24px;bottom:24px;z-index:1200;width:min(390px,calc(100vw - 32px));padding:22px;background:rgba(11,18,38,.97);border:1px solid var(--border-hover);border-radius:16px;box-shadow:0 22px 70px rgba(0,0,0,.55),0 0 32px rgba(56,189,248,.1);backdrop-filter:blur(18px);animation:skillPopupIn .18s ease-out both}
+.skill-popover::before{content:'';position:absolute;top:0;left:20px;right:20px;height:2px;background:linear-gradient(90deg,var(--cyan),var(--indigo));border-radius:2px}
+.skill-popover-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px}
+.skill-popover-kicker{font: .68rem 'DM Mono',monospace;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase}
+.skill-popover h3{font-family:'Syne',sans-serif;font-size:1.15rem;line-height:1.3;margin-top:4px}
+.skill-popover p{color:#94a3b8;font-size:.86rem;line-height:1.65;margin:0}
+.skill-popover .skill-use{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.skill-popover .skill-use strong{color:#cbd5e1;font-weight:600}
+.skill-popover-close{flex:0 0 32px;width:32px;height:32px;border:1px solid var(--border);border-radius:8px;background:rgba(56,189,248,.07);color:#cbd5e1;cursor:pointer}
+.skill-popover-close:hover{border-color:var(--cyan);color:var(--cyan)}
+@keyframes skillPopupIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* ── EXPERIENCE ── */
 .timeline{position:relative;margin-top:52px;padding-left:36px}
@@ -299,6 +315,7 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
   .contact-layout{grid-template-columns:1fr;gap:26px}
   .contact-form-row{grid-template-columns:1fr}
   .contact-card{padding:22px}
+  .skill-popover{right:16px;bottom:16px}
 }
 </style>
 </head>
@@ -370,48 +387,57 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
       <div class="glass-card fu fu-d1">
         <div class="card-title"><i class="fas fa-brain"></i>AI, ML & NLP</div>
         <div class="card-sub">Semantic matching, text processing, and model-backed applications</div>
-        <div class="proj-tags"><span class="p-tag">SentenceTransformers</span><span class="p-tag">spaCy</span><span class="p-tag">scikit-learn</span><span class="p-tag">OpenRouter</span><span class="p-tag">OpenAI-compatible APIs</span></div>
+        <div class="proj-tags"><button type="button" class="p-tag skill-chip" data-skill="machine-learning">Machine learning</button><button type="button" class="p-tag skill-chip" data-skill="nlp">NLP</button><button type="button" class="p-tag skill-chip" data-skill="semantic-matching">Semantic matching</button><button type="button" class="p-tag skill-chip" data-skill="genai">GenAI</button><button type="button" class="p-tag skill-chip" data-skill="sentence-transformers">SentenceTransformers</button><button type="button" class="p-tag skill-chip" data-skill="spacy">spaCy</button><button type="button" class="p-tag skill-chip" data-skill="scikit-learn">scikit-learn</button><button type="button" class="p-tag skill-chip" data-skill="openrouter">OpenRouter</button><button type="button" class="p-tag skill-chip" data-skill="openai-api">OpenAI-compatible APIs</button></div>
       </div>
       <div class="glass-card fu fu-d2">
         <div class="card-title"><i class="fas fa-code"></i>Backend & Data</div>
         <div class="card-sub">Services, structured data, validation, and storage</div>
-        <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">SQL</span><span class="p-tag">FastAPI</span><span class="p-tag">PostgreSQL</span><span class="p-tag">SQLite</span><span class="p-tag">SQLAlchemy</span><span class="p-tag">Pydantic</span></div>
+        <div class="proj-tags"><button type="button" class="p-tag skill-chip" data-skill="python">Python</button><button type="button" class="p-tag skill-chip" data-skill="sql">SQL</button><button type="button" class="p-tag skill-chip" data-skill="fastapi">FastAPI</button><button type="button" class="p-tag skill-chip" data-skill="postgresql">PostgreSQL</button><button type="button" class="p-tag skill-chip" data-skill="sqlite">SQLite</button><button type="button" class="p-tag skill-chip" data-skill="sqlalchemy">SQLAlchemy</button><button type="button" class="p-tag skill-chip" data-skill="pydantic">Pydantic</button></div>
       </div>
       <div class="glass-card fu fu-d1">
         <div class="card-title"><i class="fas fa-chart-line"></i>Analytics & Interfaces</div>
         <div class="card-sub">Exploration, metrics, dashboards, and user-facing tools</div>
-        <div class="proj-tags"><span class="p-tag">Pandas</span><span class="p-tag">NumPy</span><span class="p-tag">Plotly</span><span class="p-tag">Streamlit</span><span class="p-tag">Power BI</span><span class="p-tag">MySQL</span></div>
+        <div class="proj-tags"><button type="button" class="p-tag skill-chip" data-skill="pandas">Pandas</button><button type="button" class="p-tag skill-chip" data-skill="numpy">NumPy</button><button type="button" class="p-tag skill-chip" data-skill="plotly">Plotly</button><button type="button" class="p-tag skill-chip" data-skill="streamlit">Streamlit</button><button type="button" class="p-tag skill-chip" data-skill="power-bi">Power BI</button><button type="button" class="p-tag skill-chip" data-skill="mysql">MySQL</button></div>
       </div>
       <div class="glass-card fu fu-d2">
         <div class="card-title"><i class="fas fa-gears"></i>Engineering Workflow</div>
         <div class="card-sub">Reproducible local development and automated workflows</div>
-        <div class="proj-tags"><span class="p-tag">Git</span><span class="p-tag">Docker Compose</span><span class="p-tag">GitHub Actions</span><span class="p-tag">pytest</span><span class="p-tag">Jupyter</span></div>
+        <div class="proj-tags"><button type="button" class="p-tag skill-chip" data-skill="git">Git</button><button type="button" class="p-tag skill-chip" data-skill="docker-compose">Docker Compose</button><button type="button" class="p-tag skill-chip" data-skill="github-actions">GitHub Actions</button><button type="button" class="p-tag skill-chip" data-skill="pytest">pytest</button><button type="button" class="p-tag skill-chip" data-skill="jupyter">Jupyter</button></div>
       </div>
     </div>
     <div class="glass-card fu" style="margin-top:24px">
       <div class="card-title"><i class="fas fa-tags"></i>AI Data Quality & Evaluation</div>
       <div class="card-sub">Experience reviewing and evaluating AI training data</div>
       <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
-        <div><strong style="color:var(--cyan)">Annotation:</strong> Text, Image & Video Labeling • Object Detection • Semantic Segmentation • Object Tracking</div>
-        <div><strong style="color:var(--cyan)">Quality:</strong> Rubric-Based QA • High-Volume/High-Accuracy Labeling • Error Identification & Correction</div>
+        <div><strong style="color:var(--cyan)">Annotation:</strong> <button type="button" class="p-tag skill-chip" data-skill="text-labeling">Text labeling</button> <button type="button" class="p-tag skill-chip" data-skill="image-labeling">Image labeling</button> <button type="button" class="p-tag skill-chip" data-skill="video-labeling">Video labeling</button> <button type="button" class="p-tag skill-chip" data-skill="object-detection">Object detection</button> <button type="button" class="p-tag skill-chip" data-skill="semantic-segmentation">Semantic segmentation</button> <button type="button" class="p-tag skill-chip" data-skill="object-tracking">Object tracking</button></div>
+        <div><strong style="color:var(--cyan)">Quality:</strong> <button type="button" class="p-tag skill-chip" data-skill="rubric-qa">Rubric-based QA</button> <button type="button" class="p-tag skill-chip" data-skill="annotation-quality">High-volume annotation</button> <button type="button" class="p-tag skill-chip" data-skill="error-analysis">Error identification & correction</button></div>
       </div>
     </div>
     <div class="tech-grid fu" style="margin-top:32px">
-      <div class="tech-item"><i class="fab fa-python" style="color:#3b82f6"></i><span>Python</span></div>
-      <div class="tech-item"><i class="fas fa-database" style="color:#38bdf8"></i><span>SQL</span></div>
-      <div class="tech-item"><i class="fas fa-chart-bar" style="color:#f59e0b"></i><span>Power BI</span></div>
-      <div class="tech-item"><i class="fas fa-file-excel" style="color:#10b981"></i><span>Excel</span></div>
-      <div class="tech-item"><i class="fas fa-brain" style="color:#a78bfa"></i><span>NLP</span></div>
-      <div class="tech-item"><i class="fas fa-server" style="color:#fb7185"></i><span>FastAPI</span></div>
-      <div class="tech-item"><i class="fab fa-git-alt" style="color:#f97316"></i><span>Git</span></div>
-      <div class="tech-item"><i class="fas fa-database" style="color:#60a5fa"></i><span>PostgreSQL</span></div>
-      <div class="tech-item"><i class="fas fa-chart-line" style="color:#34d399"></i><span>Plotly</span></div>
-      <div class="tech-item"><i class="fas fa-project-diagram" style="color:#818cf8"></i><span>GenAI APIs</span></div>
-      <div class="tech-item"><i class="fas fa-table" style="color:#fbbf24"></i><span>Pandas</span></div>
-      <div class="tech-item"><i class="fas fa-calculator" style="color:#38bdf8"></i><span>NumPy</span></div>
+      <button type="button" class="tech-item" data-skill="python" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fab fa-python" style="color:#3b82f6"></i><span>Python</span></button>
+      <button type="button" class="tech-item" data-skill="sql" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-database" style="color:#38bdf8"></i><span>SQL</span></button>
+      <button type="button" class="tech-item" data-skill="power-bi" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-chart-bar" style="color:#f59e0b"></i><span>Power BI</span></button>
+      <button type="button" class="tech-item" data-skill="excel" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-file-excel" style="color:#10b981"></i><span>Excel</span></button>
+      <button type="button" class="tech-item" data-skill="nlp" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-brain" style="color:#a78bfa"></i><span>NLP</span></button>
+      <button type="button" class="tech-item" data-skill="fastapi" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-server" style="color:#fb7185"></i><span>FastAPI</span></button>
+      <button type="button" class="tech-item" data-skill="git" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fab fa-git-alt" style="color:#f97316"></i><span>Git</span></button>
+      <button type="button" class="tech-item" data-skill="postgresql" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-database" style="color:#60a5fa"></i><span>PostgreSQL</span></button>
+      <button type="button" class="tech-item" data-skill="plotly" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-chart-line" style="color:#34d399"></i><span>Plotly</span></button>
+      <button type="button" class="tech-item" data-skill="openai-api" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-diagram-project" style="color:#818cf8"></i><span>GenAI APIs</span></button>
+      <button type="button" class="tech-item" data-skill="pandas" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-table" style="color:#fbbf24"></i><span>Pandas</span></button>
+      <button type="button" class="tech-item" data-skill="numpy" aria-haspopup="dialog" aria-controls="skillPopover"><i class="fas fa-calculator" style="color:#38bdf8"></i><span>NumPy</span></button>
     </div>
   </div>
 </section>
+
+<div class="skill-popover" id="skillPopover" role="dialog" aria-modal="false" aria-labelledby="skillPopoverTitle" aria-describedby="skillPopoverDefinition" hidden>
+  <div class="skill-popover-head">
+    <div><div class="skill-popover-kicker">Skill note</div><h3 id="skillPopoverTitle"></h3></div>
+    <button class="skill-popover-close" id="skillPopoverClose" type="button" aria-label="Close skill details"><i class="fas fa-times"></i></button>
+  </div>
+  <p id="skillPopoverDefinition"></p>
+  <p class="skill-use"><strong>How it is used:</strong> <span id="skillPopoverUse"></span></p>
+</div>
 
 <!-- EXPERIENCE -->
 <section class="section" id="experience" style="padding-top:0">
@@ -843,6 +869,84 @@ document.querySelectorAll('.f-btn').forEach(btn=>{
       c.classList.toggle('hidden',f!=='all'&&!c.dataset.category.includes(f));
     });
   });
+});
+
+// ── Interactive skill notes ──
+const skillNotes={
+  'machine-learning':{title:'Machine learning',definition:'Methods that learn patterns from examples to classify, rank, forecast, or score new data.',uses:'The portfolio applies model-based similarity and statistical analysis; project cards distinguish those uses from deterministic rules.'},
+  'nlp':{title:'Natural language processing (NLP)',definition:'Techniques for extracting structure and meaning from human language, including entities, skills, and relationships.',uses:'Used in resume parsing and matching to identify skills, experience, and role-relevant text.'},
+  'semantic-matching':{title:'Semantic matching',definition:'Comparing text by meaning rather than requiring exact word overlap, often using vector embeddings.',uses:'The resume analyzer compares resume and job-description embeddings, alongside separate skill and experience signals.'},
+  'genai':{title:'Generative AI (GenAI)',definition:'Models that generate text or other content from instructions and context.',uses:'RetailIQ calls a configured OpenRouter or OpenAI-compatible model to draft SQL; its output is checked and shown as a preview, not executed.'},
+  'sentence-transformers':{title:'SentenceTransformers',definition:'A Python library for encoding sentences and paragraphs as vectors for semantic similarity and retrieval tasks.',uses:'Creates resume and job-description embeddings for the semantic-match component of the resume analyzer.'},
+  'spacy':{title:'spaCy',definition:'A production-oriented NLP library for tokenization, linguistic processing, and named-entity recognition.',uses:'Supports text parsing and extraction in the resume analyzer, combined with explicit skill-keyword rules.'},
+  'scikit-learn':{title:'scikit-learn',definition:'A Python toolkit for classical machine learning, preprocessing, model selection, and evaluation.',uses:'Part of the project toolkit for statistical and machine-learning workflows; it is not presented as the model behind every portfolio project.'},
+  'openrouter':{title:'OpenRouter',definition:'A hosted API gateway that provides access to language models through a unified, OpenAI-compatible interface.',uses:'RetailIQ can use it to request SQL drafts; the selected model, access, and pricing depend on configuration.'},
+  'openai-api':{title:'OpenAI-compatible APIs',definition:'An API convention that lets compatible providers use familiar chat-completion request and response shapes.',uses:'RetailIQ uses the OpenAI Python client with provider configuration for OpenRouter or OpenAI.'},
+  'python':{title:'Python',definition:'A general-purpose programming language used for data work, APIs, automation, and machine-learning applications.',uses:'Used across the portfolio for data processing, NLP and matching, pipeline code, and FastAPI services.'},
+  'sql':{title:'SQL',definition:'A language for querying and managing structured relational data.',uses:'Used for data cleaning and analysis, KPI queries, and PostgreSQL-backed retail services. RetailIQ currently generates SQL previews only.'},
+  'fastapi':{title:'FastAPI',definition:'A Python framework for building typed HTTP APIs with automatic OpenAPI documentation.',uses:'Powers RetailIQ’s model-backed SQL-preview endpoint and the retail analytics API.'},
+  'postgresql':{title:'PostgreSQL',definition:'An open-source relational database with strong support for transactions, constraints, and complex queries.',uses:'Stores retail transaction data in the analytics platform and provides the target SQL dialect for RetailIQ previews.'},
+  'sqlite':{title:'SQLite',definition:'A lightweight, file-based relational database that runs without a separate database server.',uses:'Stores validated KPI records for the automated report-ingestion workflow.'},
+  'sqlalchemy':{title:'SQLAlchemy',definition:'A Python SQL toolkit and ORM for defining database models and working with relational databases.',uses:'Persists KPI records in the reporting pipeline and defines schema models in the RetailIQ setup.'},
+  'pydantic':{title:'Pydantic',definition:'A Python library that validates and parses data against declared schemas and types.',uses:'Validates extracted KPI records and API request inputs before downstream processing.'},
+  'pandas':{title:'Pandas',definition:'A Python library for tabular data cleaning, transformation, grouping, and analysis.',uses:'Prepares project datasets and KPI records for analysis, dashboards, and export.'},
+  'numpy':{title:'NumPy',definition:'A Python library for efficient numerical arrays and mathematical operations.',uses:'Supports numerical analysis and data-processing workflows alongside Pandas.'},
+  'plotly':{title:'Plotly',definition:'A visualization library for interactive charts with hover, zoom, and filtering affordances.',uses:'Builds trend charts and KPI visualizations for the analytics dashboards.'},
+  'streamlit':{title:'Streamlit',definition:'A Python framework for creating interactive data applications with a small amount of UI code.',uses:'Provides the RetailIQ query interface and interactive analytics dashboards.'},
+  'power-bi':{title:'Power BI',definition:'Microsoft’s business-intelligence platform for data models, reports, and interactive dashboards.',uses:'Used to present business and healthcare analysis in BI-focused portfolio work.'},
+  'mysql':{title:'MySQL',definition:'A relational database system commonly used for transactional applications and SQL analysis.',uses:'Used in the layoffs data-cleaning workflow and healthcare SQL case study.'},
+  'git':{title:'Git',definition:'A distributed version-control system for tracking source changes and collaborating on code.',uses:'Versions the portfolio projects and supports reviewable, incremental changes.'},
+  'docker-compose':{title:'Docker Compose',definition:'A tool for defining and running multi-container development environments from a YAML file.',uses:'Starts the local PostgreSQL service used by RetailIQ.'},
+  'github-actions':{title:'GitHub Actions',definition:'GitHub’s automation platform for running workflows in response to schedules and repository events.',uses:'The automated retail reporter documents scheduled pipeline runs through GitHub Actions.'},
+  'pytest':{title:'pytest',definition:'A Python testing framework for writing and running unit and integration tests.',uses:'Useful for checking extraction, validation, and pipeline behavior as these projects grow.'},
+  'jupyter':{title:'Jupyter',definition:'An interactive notebook environment that combines executable code, outputs, and explanatory notes.',uses:'Used for exploratory analysis and visual investigation in data-science projects.'},
+  'excel':{title:'Microsoft Excel',definition:'A spreadsheet tool for organizing, inspecting, and analyzing tabular data.',uses:'Supports spreadsheet-based data review and reporting in the analytics portfolio.'},
+  'text-labeling':{title:'Text labeling',definition:'Applying consistent labels to text examples so they can be reviewed, categorized, or used in training and evaluation.',uses:'Part of the AI data-quality work, following task-specific rubrics.'},
+  'image-labeling':{title:'Image labeling',definition:'Annotating image content with categories, regions, or other task-defined labels.',uses:'Supports labeled visual datasets for computer-vision training and evaluation.'},
+  'video-labeling':{title:'Video labeling',definition:'Applying labels to video frames or temporal events while preserving context across time.',uses:'Used in multimodal annotation work and can include tracking objects across frames.'},
+  'object-detection':{title:'Object detection',definition:'Identifying objects in an image and locating them with bounding boxes or equivalent regions.',uses:'A visual annotation and computer-vision concept included in the AI data-quality work.'},
+  'semantic-segmentation':{title:'Semantic segmentation',definition:'Assigning a class label to each pixel in an image to identify object or scene regions.',uses:'A fine-grained labeling task for training and evaluating computer-vision systems.'},
+  'object-tracking':{title:'Object tracking',definition:'Maintaining an object’s identity and location across successive video frames.',uses:'Supports temporal video annotation and tracking-oriented computer-vision datasets.'},
+  'rubric-qa':{title:'Rubric-based quality assurance',definition:'Reviewing work against explicit criteria so judgments are consistent and auditable.',uses:'Guides annotation review, error identification, and quality checks on AI-data tasks.'},
+  'annotation-quality':{title:'Annotation quality',definition:'The consistency, correctness, and completeness of labels relative to task instructions.',uses:'Quality review helps catch ambiguous examples, inconsistent labels, and edge cases before data is used.'},
+  'error-analysis':{title:'Error analysis',definition:'Systematically examining incorrect or inconsistent outputs to find recurring failure patterns.',uses:'Applied during data annotation QA and useful for improving extraction and model-evaluation workflows.'}
+};
+const skillPopover=document.getElementById('skillPopover');
+const skillPopoverTitle=document.getElementById('skillPopoverTitle');
+const skillPopoverDefinition=document.getElementById('skillPopoverDefinition');
+const skillPopoverUse=document.getElementById('skillPopoverUse');
+const skillPopoverClose=document.getElementById('skillPopoverClose');
+let lastSkillTrigger=null;
+function closeSkillPopover(restoreFocus=true){
+  skillPopover.hidden=true;
+  document.querySelectorAll('[data-skill][aria-expanded="true"]').forEach(button=>button.setAttribute('aria-expanded','false'));
+  if(restoreFocus&&lastSkillTrigger) lastSkillTrigger.focus();
+}
+document.querySelectorAll('[data-skill]').forEach(button=>{
+  button.setAttribute('aria-haspopup','dialog');
+  button.setAttribute('aria-controls','skillPopover');
+  button.setAttribute('aria-expanded','false');
+});
+document.addEventListener('click',event=>{
+  const trigger=event.target.closest('[data-skill]');
+  if(trigger){
+    const note=skillNotes[trigger.dataset.skill];
+    if(!note) return;
+    lastSkillTrigger=trigger;
+    document.querySelectorAll('[data-skill][aria-expanded="true"]').forEach(button=>button.setAttribute('aria-expanded','false'));
+    trigger.setAttribute('aria-expanded','true');
+    skillPopoverTitle.textContent=note.title;
+    skillPopoverDefinition.textContent=note.definition;
+    skillPopoverUse.textContent=note.uses;
+    skillPopover.hidden=false;
+    skillPopoverClose.focus();
+    return;
+  }
+  if(!skillPopover.hidden&&!event.target.closest('#skillPopover')) closeSkillPopover(false);
+});
+skillPopoverClose.addEventListener('click',()=>closeSkillPopover());
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&!skillPopover.hidden) closeSkillPopover();
 });
 
 // ── Contact form ──
