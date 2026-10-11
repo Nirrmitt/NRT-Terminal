@@ -246,6 +246,9 @@ section[id],footer[id]{scroll-margin-top:84px}
 .proj-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:5px}
 .proj-type{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:5px;margin-bottom:12px}
 .proj-desc{color:#94a3b8;font-size:.9rem;line-height:1.75}
+.proj-result{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:10px 12px;border-radius:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.14);font-size:.78rem;line-height:1.5;color:#94a3b8}
+.proj-result i{color:var(--cyan);margin-top:3px}
+.proj-result b{color:var(--text);font-weight:600}
 .proj-footer{padding:18px 26px 22px;margin-top:16px}
 .proj-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
 .p-tag{padding:4px 12px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.15);border-radius:15px;font-size:.76rem;color:#94a3b8;font-weight:500;transition:var(--tr)}
@@ -484,7 +487,6 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
         <a href="mailto:nirrmit.rtickoo@gmail.com" class="h-btn h-btn-email"><span class="h-btn-icon"><i class="fas fa-envelope"></i></span> nirrmit.rtickoo@gmail.com</a>
         <a href="https://github.com/Nirrmitt" target="_blank" class="h-btn h-btn-gh"><span class="h-btn-icon"><i class="fab fa-github"></i></span> GitHub</a>
         <a href="https://www.linkedin.com/in/n-r-t/" target="_blank" rel="noopener noreferrer" class="h-btn h-btn-li"><span class="h-btn-icon"><i class="fab fa-linkedin-in"></i></span> LinkedIn</a>
-        <a href="tel:+919695585566" class="h-btn h-btn-ph"><span class="h-btn-icon"><i class="fas fa-phone-alt"></i></span> +91 96955 85566</a>
       </div>
               <div class="resume-dl" id="resume-dl">
                 <div class="resume-dl-text"><strong><i class="fas fa-file-lines"></i> Download my resume</strong><span>One-page, ATS-friendly PDF, tailored to the role you pick</span></div>
@@ -652,6 +654,7 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
             </div>
           </div>
           <ul class="tl-list">
+            <li>Completed during the semester break to earn college semester credits, alongside the B.Tech program.</li>
             <li>Contributed to software development, code implementation, and application maintenance to support project requirements.</li>
             <li>Identified and troubleshot software issues, assisted with debugging, and supported testing to improve application functionality and reliability.</li>
             <li>Collaborated with team members on technical tasks while gaining hands-on experience with development tools, coding practices, and the software development lifecycle.</li>
@@ -682,6 +685,7 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
           <div class="proj-top">
             <div class="proj-icon" style="background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.2);color:#22d3ee"><i class="fas fa-shield-halved"></i></div>
             <div class="proj-badges">
+              <span class="p-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)">⭐ Featured</span>
               <span class="p-badge" style="background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.25)">GenAI</span>
               <span class="p-badge" style="background:rgba(99,102,241,.12);color:#a5b4fc;border:1px solid rgba(99,102,241,.25)">API + UI</span>
             </div>
@@ -690,6 +694,7 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
           <div class="proj-title">Phylax-ops: Safety-First Ops Assistant</div>
           <div class="proj-type" style="color:#22d3ee"><i class="fas fa-user-shield"></i>GenAI · RAG + Guarded SQL</div>
           <div class="proj-desc">A safety-first retail operations assistant built with LangGraph, FastAPI, and Streamlit. It combines policy retrieval and read-only SQL checks, exposes tool evidence, and gates ticket actions behind explicit confirmation.</div>
+          <div class="proj-result"><i class="fas fa-chart-simple"></i><span><b>Eval (mock run, 25 labeled cases):</b> 0.98 tool-routing accuracy · 1.00 SQL accuracy · 0.96 RAG Recall@4</span></div>
         </div>
         <div class="proj-footer">
           <div class="proj-tags"><span class="p-tag">Python</span><span class="p-tag">LangGraph</span><span class="p-tag">FastAPI</span><span class="p-tag">Streamlit</span><span class="p-tag">PostgreSQL</span></div>
@@ -778,7 +783,7 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
         <div class="proj-body">
           <div class="proj-top">
             <div class="proj-icon" style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.2);color:#38bdf8"><i class="fas fa-store"></i></div>
-            <div class="proj-badges"><span class="p-badge" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)">⭐ Featured</span></div>
+            <div class="proj-badges"><span class="p-badge" style="background:rgba(56,189,248,.12);color:#38bdf8;border:1px solid rgba(56,189,248,.25)">Async API</span></div>
           </div>
           <div class="proj-num">06</div>
           <div class="proj-title">Retail Analytics Platform</div>
@@ -828,35 +833,35 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
 
       <div class="cert-card fu">
         <div class="cert-top"><div class="cert-icon"><i class="fas fa-university"></i></div><div><div class="cert-title">Business Analytics Specialization</div><div class="cert-issuer">University of Pennsylvania: Wharton</div></div></div>
-        <div class="cert-desc">A rigorous 5-course specialization from Wharton covering customer analytics, operations analytics, people analytics, and accounting analytics. Developed skills to translate complex data into actionable business decisions using statistical models.</div>
+        <div class="cert-desc">Five-course Wharton specialization in customer, operations, people, and accounting analytics.</div>
         <div class="cert-tags"><span class="c-tag">Customer Analytics</span><span class="c-tag">Operations</span><span class="c-tag">People Analytics</span><span class="c-tag">Regression</span></div>
         <div class="cert-foot"><span class="cert-num">COURSE 01</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu fu-d1">
-        <div class="cert-top"><div class="cert-icon"><i class="fas fa-chart-pie"></i></div><div><div class="cert-title">Operations Analysis</div><div class="cert-issuer">Wharton / Coursera</div></div></div>
-        <div class="cert-desc">Deep-dive into three analytical pillars: customer behaviour modelling, workforce analytics, and financial metrics. Learned to identify operational bottlenecks, measure employee performance, and interpret accounting data for strategic improvements.</div>
+        <div class="cert-top"><div class="cert-icon"><i class="fas fa-chart-pie"></i></div><div><div class="cert-title">Operations Analytics</div><div class="cert-issuer">Wharton (course within the specialization)</div></div></div>
+        <div class="cert-desc">Wharton course on customer behaviour, workforce analytics, and financial metrics.</div>
         <div class="cert-tags"><span class="c-tag">Customer Modelling</span><span class="c-tag">Workforce Analytics</span><span class="c-tag">Financial Metrics</span></div>
         <div class="cert-foot"><span class="cert-num">COURSE 02</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu fu-d2">
         <div class="cert-top"><div class="cert-icon"><i class="fas fa-chart-bar"></i></div><div><div class="cert-title">Power BI Dashboards</div><div class="cert-issuer">Microsoft / Udemy</div></div></div>
-        <div class="cert-desc">Hands-on certification in building AI-powered interactive dashboards. Covered DAX formulas, data modelling, drill-through reports, and AI visuals including Key Influencers and Smart Narratives. Built end-to-end reporting solutions with live data sources.</div>
+        <div class="cert-desc">Interactive dashboards with DAX, data modelling, drill-through, and AI visuals.</div>
         <div class="cert-tags"><span class="c-tag">DAX</span><span class="c-tag">Data Modelling</span><span class="c-tag">AI Visuals</span><span class="c-tag">Reporting</span></div>
         <div class="cert-foot"><span class="cert-num">COURSE 03</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu">
         <div class="cert-top"><div class="cert-icon"><i class="fas fa-brain"></i></div><div><div class="cert-title">Data Science & Machine Learning</div><div class="cert-issuer">Coursera / IBM</div></div></div>
-        <div class="cert-desc">Comprehensive program spanning the full data science pipeline: EDA, feature engineering, supervised and unsupervised ML models. Also covered Generative AI fundamentals including transformer architectures and prompt engineering.</div>
+        <div class="cert-desc">The data science pipeline: EDA, feature engineering, supervised and unsupervised ML, GenAI basics.</div>
         <div class="cert-tags"><span class="c-tag">Supervised ML</span><span class="c-tag">Feature Engineering</span><span class="c-tag">Generative AI</span><span class="c-tag">Neural Networks</span></div>
         <div class="cert-foot"><span class="cert-num">COURSE 04</span><span class="cert-verified">Coursework</span></div>
       </div>
 
       <div class="cert-card fu fu-d1">
         <div class="cert-top"><div class="cert-icon"><i class="fab fa-python"></i></div><div><div class="cert-title">OOP in Python</div><div class="cert-issuer">Coursera / Duke University</div></div></div>
-        <div class="cert-desc">Mastered OOP principles in Python: classes, inheritance, polymorphism, encapsulation, and abstraction. Applied concepts to design reusable, modular code structures for scalable data pipelines and analytics tools.</div>
+        <div class="cert-desc">Classes, inheritance, polymorphism, and encapsulation for modular Python code.</div>
         <div class="cert-tags"><span class="c-tag">Classes & Objects</span><span class="c-tag">Inheritance</span><span class="c-tag">Polymorphism</span><span class="c-tag">Design Patterns</span></div>
         <div class="cert-foot"><span class="cert-num">COURSE 05</span><span class="cert-verified">Coursework</span></div>
       </div>
@@ -881,23 +886,6 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
         <div class="gpa-wrap">
          
           
-        </div>
-      </div>
-      <div class="edu-card fu fu-d1">
-        <div class="edu-card-glow"></div>
-        <div class="edu-badge edu-badge-school"><i class="fas fa-school"></i> High School</div>
-        <div class="edu-title">Senior Secondary Education</div>
-        <div class="edu-org"><i class="fas fa-building"></i>G.D. Goenka Public School</div>
-        <div class="edu-year"><i class="fas fa-map-marker-alt"></i>Kanpur, Uttar Pradesh, India</div>
-        <div style="margin-top:20px;padding:16px;background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.1);border-radius:12px">
-          <div style="font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:500">Focus Areas</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            
-            <span class="c-tag">Physics</span>
-            <span class="c-tag">Chemistry</span>
-            <span class="c-tag">Mathematics</span>
-            <span class="c-tag">IT</span>
-          </div>
         </div>
       </div>
     </div>
@@ -943,7 +931,6 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
         <iframe name="contactResponseFrame" title="Contact form response" hidden></iframe>
       </div>
     </div>
-    <blockquote class="footer-quote">“Physics, AI, and Neuroscience seem to point toward a ‘Universal Mind,’ echoing millennia-old philosophies of Panpsychism and Vedanta.”</blockquote>
     <div class="footer-copy">&copy; 2026 <span>Nirrmit R. Tickoo</span> · Building useful AI and data products</div>
   </div>
 </footer>
