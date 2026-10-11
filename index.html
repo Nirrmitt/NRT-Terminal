@@ -249,6 +249,27 @@ section[id],footer[id]{scroll-margin-top:84px}
 .proj-result{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:10px 12px;border-radius:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.14);font-size:.78rem;line-height:1.5;color:#94a3b8}
 .proj-result i{color:var(--cyan);margin-top:3px}
 .proj-result b{color:var(--text);font-weight:600}
+.arch{grid-column:1/-1;margin-top:20px;padding:30px;border-radius:20px;background:rgba(11,18,38,.85);border:1px solid var(--border);backdrop-filter:blur(16px)}
+.arch-kicker{font:600 .7rem 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.arch-head h3{font:700 1.2rem 'Syne',sans-serif;margin:6px 0 6px;color:var(--text)}
+.arch-head p{color:#94a3b8;font-size:.88rem;line-height:1.6;margin-bottom:22px}
+.arch-flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.arch-node{padding:14px 16px;border-radius:12px;border:1px solid rgba(148,163,184,.25);background:rgba(15,23,42,.6);color:var(--text);font-weight:600;font-size:.88rem;display:flex;flex-direction:column;gap:5px}
+.arch-node small,.arch-chip small{font-weight:400;font-size:.72rem;color:#94a3b8}
+.arch-accent{border-color:rgba(56,189,248,.4)}
+.arch-arrow{width:22px;height:2px;background:rgba(56,189,248,.5);position:relative;flex-shrink:0}
+.arch-arrow::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid rgba(56,189,248,.7);border-right:0}
+.arch-group{gap:8px}
+.arch-group-label{font:500 .68rem 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.arch-chip{padding:8px 12px;border-radius:9px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.16);font-size:.82rem;display:flex;flex-direction:column;gap:2px}
+.arch-chip.arch-warn{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.25)}
+.arch-outs{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+.arch-outs span{font-weight:500;font-size:.72rem;padding:4px 8px;border-radius:7px}
+.arch-outs .ok{background:rgba(52,211,153,.1);color:#34d399}
+.arch-outs .mid{background:rgba(251,191,36,.1);color:#fbbf24}
+.arch-outs .bad{background:rgba(248,113,113,.1);color:#f87171}
+.arch-more{display:inline-block;margin-top:20px;color:var(--cyan);font-size:.85rem;text-decoration:none}
+@media(max-width:768px){.arch{padding:22px 18px}.arch-flow{flex-direction:column;align-items:stretch;gap:8px}.arch-arrow{width:2px;height:16px;align-self:center}.arch-arrow::after{right:auto;left:-4px;top:auto;bottom:-1px;border:5px solid transparent;border-top:7px solid rgba(56,189,248,.7);border-bottom:0}}
 .proj-footer{padding:18px 26px 22px;margin-top:16px}
 .proj-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
 .p-tag{padding:4px 12px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.15);border-radius:15px;font-size:.76rem;color:#94a3b8;font-weight:500;transition:var(--tr)}
@@ -814,7 +835,24 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
         </div>
       </a>
 
-         
+     <div class="arch fu">
+      <div class="arch-head"><span class="arch-kicker">System design</span><h3>Phylax-ops: how a request moves through the agent</h3><p>LangGraph orchestrates a bounded plan, validated tools, and an evidence check before anything reaches the user.</p></div>
+      <div class="arch-flow">
+        <div class="arch-node">Question</div><div class="arch-arrow"></div>
+        <div class="arch-node arch-accent">Planner<small>out-of-scope → polite refusal</small></div><div class="arch-arrow"></div>
+        <div class="arch-node arch-group"><span class="arch-group-label">Up to 6 tool calls</span>
+          <div class="arch-chip">Policy search<small>ChromaDB RAG</small></div>
+          <div class="arch-chip">SQL<small>SELECT guard + row cap</small></div>
+          <div class="arch-chip arch-warn">Ticket<small>confirm + env opt-in</small></div>
+        </div><div class="arch-arrow"></div>
+        <div class="arch-node">Synthesizer<small>formats tool output only</small></div><div class="arch-arrow"></div>
+        <div class="arch-node arch-accent">Evidence check
+          <div class="arch-outs"><span class="ok">Supported → answer with sources</span><span class="mid">Weak → one refined retry</span><span class="bad">Failure → human handoff</span></div>
+        </div>
+      </div>
+      <a class="arch-more" href="https://github.com/Nirrmitt/Phylax-ops/blob/main/docs/architecture.md" target="_blank" rel="noopener noreferrer">Read the architecture notes →</a>
+    </div>
+
      <div class="projects-footer">
     <a href="https://github.com/Nirrmitt" target="_blank" rel="noopener noreferrer" class="view-all-btn">
       View All Projects on GitHub →
