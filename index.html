@@ -81,8 +81,24 @@ body:has(a:hover) .cursor-ring{width:50px;height:50px;opacity:.8}
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2rem;transition:var(--tr)}
 .nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px}
 nav.scrolled{background:rgba(7,11,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:64px}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:3.25rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:12px}
-.logo-badge{width:38px;height:38px;background:linear-gradient(135deg,#6b7280,#9ca3af);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0}
+.logo{font-family:'Syne',sans-serif;font-weight:800;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:12px;min-width:0}
+.logo-badge{position:relative;width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:2px;overflow:hidden;isolation:isolate;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s;box-shadow:0 0 18px rgba(56,189,248,.28)}
+.logo-badge::before{content:"";position:absolute;inset:-60%;z-index:-2;background:conic-gradient(from 0deg,#22d3ee,#818cf8,#a78bfa,#22d3ee);animation:logoSpin 5s linear infinite}
+.logo-badge::after{content:"";position:absolute;inset:2px;z-index:-1;border-radius:11px;background:linear-gradient(145deg,#0b1226,#070b1a)}
+.logo-mark{font:800 .8rem/1 'Syne',sans-serif;letter-spacing:-.3px;background:linear-gradient(135deg,#67e8f9,#a5b4fc 60%,#c4b5fd);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.logo-word{display:flex;flex-direction:column;line-height:1.1;gap:3px}
+.logo-name{font:800 .84rem 'Syne',sans-serif;letter-spacing:0;color:var(--text);white-space:nowrap}
+.logo-name b{color:var(--cyan);animation:logoBlink 1.1s steps(2,start) infinite}
+.logo-tag{font:500 .62rem 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.logo-tag i{color:var(--indigo);font-style:normal}
+.logo:hover .logo-badge{transform:rotate(-6deg) scale(1.06);box-shadow:0 0 26px rgba(129,140,248,.5)}
+@keyframes logoSpin{to{transform:rotate(360deg)}}
+@keyframes logoBlink{50%{opacity:.15}}
+@media(prefers-reduced-motion:reduce){.logo-badge::before,.logo-name b{animation:none}}
+@media(max-width:1100px) and (min-width:769px){.logo-word{display:none}}
+@media(max-width:480px){.logo-badge{width:40px;height:40px}.logo-tag{display:none}.logo-name{font-size:.8rem}.logo{gap:10px}}
+@media(max-width:340px){.logo-word{display:none}}
+.nav-cta{white-space:nowrap}
 .nav-links{display:flex;align-items:center;gap:2rem}
 .menu-toggle{display:none}
 .nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;transition:var(--tr);position:relative}
@@ -380,6 +396,13 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
   #back-top{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));width:46px;height:46px}
 }
 @media(max-width:480px){
+  .resume-dl{margin:-6px 0 28px;padding:14px;max-width:none}
+  .resume-dl-controls{flex-direction:column;flex-basis:100%}
+  .resume-dl select,.resume-btn{width:100%;min-height:46px;font-size:16px}
+  .resume-btn{font-size:.9rem}
+}
+@media(hover:none){body,.h-btn{cursor:auto}}
+@media(max-width:480px){
   .hero{padding-right:1rem;padding-left:1rem}
   .hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat-cell{padding:14px 8px}
@@ -437,9 +460,9 @@ footer::before{content:'';position:absolute;top:-200px;left:50%;transform:transl
 <!-- Navbar -->
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="#" class="logo">
-      <div class="logo-badge">NRT</div>
-   
+    <a href="#" class="logo" aria-label="Nirrmit R. Tickoo - back to top">
+      <span class="logo-badge" aria-hidden="true"><span class="logo-mark">NRT</span></span>
+      <span class="logo-word"><span class="logo-name">Nirrmit<b>.</b>Tickoo</span><span class="logo-tag">AI / ML <i>&middot;</i> GenAI</span></span>
     </a>
     <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="siteNavigation" aria-label="Open navigation menu">
       <i class="fas fa-bars" aria-hidden="true"></i><span>Menu</span>
