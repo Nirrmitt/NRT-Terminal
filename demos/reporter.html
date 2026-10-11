@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Automated Retail Analytics Reporter | Live Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+:root{--accent:#38bdf8}
+.d-btn.primary{color:#04111d}
+.ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;align-items:end}
+.ctrls .d-l{margin-top:0}
+input[type=date]{width:100%;background:rgba(2,6,18,.7);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 12px;font:400 .92rem 'DM Sans',sans-serif;color-scheme:dark}
+input[type=date]:focus{border-color:var(--accent);outline:none}
+.status{font-size:.82rem;color:var(--muted)}
+.status.err{color:var(--red)}
+.kpi b{transition:opacity .25s}
+.kpi.flash b{animation:flash .5s}
+@keyframes flash{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
+.chartbox{position:relative;height:270px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.stage{background:#2b3548;padding:18px;border-radius:14px;overflow:auto}
+/* branded PDF page, mirrors report_builder.py: title, KPI lines, category chart */
+#page{background:#fff;color:#0f172a;width:100%;max-width:520px;margin:0 auto;aspect-ratio:210/297;padding:6.5% 7%;box-shadow:0 10px 30px rgba(0,0,0,.4);font-family:Helvetica,Arial,sans-serif;display:flex;flex-direction:column;border-top:6px solid #2563EB}
+#page h3{font:700 1.15rem Helvetica,Arial,sans-serif;text-align:center;margin-bottom:3px}
+#page .sub{text-align:center;font-size:.68rem;color:#64748b;margin-bottom:14px}
+#page .line{font-size:.82rem;padding:5px 0;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;gap:10px}
+#page .line b{font-weight:700}
+#page img{width:100%;margin-top:14px;border:1px solid #e2e8f0}
+#page .ft{margin-top:auto;padding-top:10px;font-size:.62rem;color:#94a3b8;display:flex;justify-content:space-between}
+.log{background:rgba(2,6,18,.85);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font:400 .78rem/1.65 'DM Mono',monospace;min-height:190px;max-height:260px;overflow:auto}
+.log div{animation:rise .3s both}
+@keyframes rise{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.log .t{color:var(--muted)}.log .ok{color:var(--green)}.log .sk{color:var(--amber)}.log .in{color:var(--cyan)}
+.sim{display:inline-block;margin-left:8px}
+.tbl{max-height:230px}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);border:1px dashed var(--border);border-radius:16px}
+.empty i{font-size:1.8rem;color:var(--accent);display:block;margin-bottom:8px}
+.about{margin-top:26px;font-size:.85rem;color:var(--muted)}
+.about ul{margin:8px 0 0 18px}.about li{margin:5px 0}
+.mono{font-family:'DM Mono',monospace}
+@page{size:A4;margin:12mm}
+@media print{
+  body{background:#fff!important}
+  body *{visibility:hidden!important}
+  #page,#page *{visibility:visible!important}
+  #page{position:absolute;left:0;top:0;width:100%;max-width:none;box-shadow:none;margin:0;height:auto;aspect-ratio:auto;min-height:0}
+  .stage{background:none;padding:0}
+}
+</style></head>
+<body>
+<header class="d-top">
+  <a class="d-back" href="../index.html#projects"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+  <div class="d-links"><a class="d-btn" target="_blank" rel="noopener noreferrer" href="https://github.com/Nirrmitt/Automated-Retail-Platform"><i class="fab fa-github"></i> Source code</a></div>
+</header>
+<main class="d-wrap">
+  <section class="d-hero">
+    <div class="d-live"><i></i> Live demo · runs in your browser</div>
+    <h1>Automated Retail <span>Analytics Reporter</span></h1>
+    <p>Raw retail orders go in; cleaned data, five headline KPIs and a branded PDF report come out. Pick a date range, watch the KPIs and charts recalculate, then download the report.</p>
+    <div class="d-note"><b>About this demo:</b> a lightweight in-browser version of the Python pipeline (pandas, matplotlib, fpdf2, GitHub Actions). The KPI formulas and cleaning rules mirror <span class="mono">kpi_engine.py</span> and <span class="mono">cleaner.py</span>. The data is <b>synthetic</b>, generated in your browser by a seeded random generator, so numbers are deterministic but not real sales. The repo's sample CSV has no <i>Region</i> column; the region filter, monthly trend chart and a few deliberately dirty rows are demo additions. “Download PDF” uses your browser's print dialog (choose <i>Save as PDF</i>), not fpdf2. The scheduled run below is a <b>simulation</b>: nothing is scheduled or emailed.</div>
+  </section>
+
+  <section class="d-card" style="margin-top:26px" aria-label="Controls">
+    <h2><i class="fas fa-sliders" style="color:var(--accent)"></i> Report filters <small id="dsInfo"></small></h2>
+    <div class="ctrls">
+      <div><label class="d-l" for="from">From</label><input type="date" id="from"></div>
+      <div><label class="d-l" for="to">To</label><input type="date" id="to"></div>
+      <div><label class="d-l" for="region">Region <small>(demo addition)</small></label>
+        <select id="region"><option>All regions</option><option>North</option><option>South</option><option>East</option><option>West</option></select></div>
+      <div><button class="d-btn" id="reset" type="button"><i class="fas fa-rotate-left"></i> Reset filters</button></div>
+    </div>
+    <div class="d-chips" role="group" aria-label="Quick ranges">
+      <button class="chip" data-q="all" type="button">Full period</button>
+      <button class="chip" data-q="q1" type="button">Q1 2024</button>
+      <button class="chip" data-q="q2" type="button">Q2 2024</button>
+      <button class="chip" data-q="last30" type="button">Last 30 days of data</button>
+    </div>
+    <p class="status" id="msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <div id="body">
+  <section class="d-card" style="margin-top:18px" aria-label="KPIs">
+    <h2><i class="fas fa-gauge-high" style="color:var(--accent)"></i> KPIs <small>same five as <span class="mono">calculate_kpis()</span></small></h2>
+    <div class="kpis" id="kpis" aria-live="polite"></div>
+    <p class="status" id="cleanInfo" style="margin-top:12px"></p>
+  </section>
+
+  <div class="d-grid two">
+    <div class="d-card"><h2>Revenue by category <small>the chart in the PDF</small></h2><div class="chartbox"><canvas id="cCat" role="img" aria-label="Bar chart of revenue by category"></canvas></div></div>
+    <div class="d-card"><h2>Monthly revenue &amp; profit <small>demo extra</small></h2><div class="chartbox"><canvas id="cMon" role="img" aria-label="Line chart of monthly revenue and profit"></canvas></div></div>
+  </div>
+
+  <div class="d-grid two">
+    <div class="d-card">
+      <h2><i class="fas fa-file-pdf" style="color:var(--accent)"></i> Report preview <small>A4, branded</small></h2>
+      <div class="stage"><div id="page" aria-label="Report preview">
+        <h3>Automated Retail Analytics Report</h3>
+        <div class="sub" id="pSub"></div>
+        <div id="pLines"></div>
+        <img id="pImg" alt="Revenue by category bar chart">
+        <div class="ft"><span>Generated by Automated Retail Analytics Reporter (demo)</span><span>Page 1 of 1</span></div>
+      </div></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center">
+        <button class="d-btn primary" id="pdf" type="button"><i class="fas fa-download"></i> Download PDF</button>
+        <span class="status">Opens the print dialog. Choose “Save as PDF”.</span>
+      </div>
+    </div>
+    <div class="d-card">
+      <h2><i class="fas fa-clock" style="color:var(--accent)"></i> Scheduled run <span class="tag warn sim">SIMULATION</span></h2>
+      <p class="status" style="margin-bottom:10px">The repo's GitHub Actions workflow uses cron <span class="mono">0 9 * * MON</span> (Mondays 09:00 UTC) and <i>workflow_dispatch</i>. Next scheduled Monday run from now: <b id="nextRun" class="mono"></b></p>
+      <button class="d-btn" id="run" type="button"><i class="fas fa-play"></i> Simulate pipeline run</button>
+      <div class="log" id="log" role="log" aria-live="polite" style="margin-top:12px"><div class="t">Idle. Press “Simulate pipeline run” to step through <span class="mono">src/main.py</span>.</div></div>
+      <div class="sub" style="margin:14px 0 6px;font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600">Filtered orders <span id="rowCount"></span></div>
+      <div class="tbl"><table><thead><tr><th>Order</th><th>Date</th><th>Category</th><th>Region</th><th>Sales</th><th>Profit</th><th>Qty</th></tr></thead><tbody id="rows"></tbody></table></div>
+    </div>
+  </div>
+  </div>
+  <div id="emptyState" class="empty" hidden><i class="fas fa-inbox"></i>No orders match these filters. Widen the date range or pick another region.</div>
+
+  <section class="d-card about">
+    <h2><i class="fas fa-circle-info" style="color:var(--accent)"></i> What follows the repo, and what doesn't</h2>
+    <ul>
+      <li><b>Cleaning</b> (<span class="mono">cleaner.py</span>): non-numeric Sales become the median Sales; missing Quantity becomes 1; Profit Margin = Profit ÷ Sales (Sales of 0 treated as 1); Month and Year derived from Order Date. Cleaning runs on the full dataset before filtering.</li>
+      <li><b>KPIs</b> (<span class="mono">kpi_engine.py</span>): Total Revenue = Σ Sales, Total Profit = Σ Profit, Avg Order Value = mean Sales per row, Top Category = category with the highest Σ Sales, Total Orders = row count (each row is one order).</li>
+      <li><b>Not in this demo:</b> reading the CSV from disk, matplotlib/fpdf2 rendering, Gmail delivery and a real scheduler. Real figures would come from your own data.</li>
+    </ul>
+  </section>
+  <p class="d-foot">Built by Nirrmit R. Tickoo</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script id="core">
+/*CORE-START*/
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const CATS = {Electronics:{lo:250,hi:1400,mLo:.16,mHi:.22,qMax:3},Clothing:{lo:30,hi:260,mLo:.26,mHi:.32,qMax:5},Home:{lo:80,hi:520,mLo:.18,mHi:.23,qMax:4}};
+const REGIONS = ["North","South","East","West"];
+function iso(d){return d.toISOString().slice(0,10);}
+// raw rows mimic data/raw/sample_retail.csv columns (+ Region); a few cells are deliberately dirty
+function genData(seed, n){
+  const rnd=mulberry32(seed), names=Object.keys(CATS), start=Date.UTC(2024,0,1), days=182, rows=[];
+  for(let i=0;i<n;i++){
+    const cat=names[Math.floor(rnd()*names.length)], c=CATS[cat];
+    const d=new Date(start+Math.floor(rnd()*days)*864e5);
+    const sales=Math.round((c.lo+rnd()*(c.hi-c.lo))*100)/100;
+    const profit=Math.round(sales*(c.mLo+rnd()*(c.mHi-c.mLo))*100)/100;
+    let qty=1+Math.floor(rnd()*c.qMax), s=sales;
+    if(rnd()<.03) s=null; // missing Sales
+    if(rnd()<.04) qty=null; // missing Quantity
+    rows.push({"Order ID":1001+i,"Order Date":iso(d),Category:cat,Region:REGIONS[Math.floor(rnd()*4)],Sales:s,Profit:profit,Quantity:qty});
+  }
+  return rows.sort((a,b)=>a["Order Date"]<b["Order Date"]?-1:a["Order Date"]>b["Order Date"]?1:a["Order ID"]-b["Order ID"]);
+}
+function median(a){const s=a.slice().sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;}
+// mirrors clean_data(): median fill for Sales, Quantity fallback 1, Profit Margin, Month/Year
+function cleanData(rows){
+  const valid=rows.map(r=>r.Sales).filter(v=>typeof v==="number"&&isFinite(v)), med=median(valid);
+  let fixedSales=0, fixedQty=0;
+  const out=rows.map(r=>{
+    const x=Object.assign({},r), ok=typeof x.Sales==="number"&&isFinite(x.Sales);
+    if(!ok){x.Sales=med;fixedSales++;}
+    if(!(typeof x.Quantity==="number"&&isFinite(x.Quantity))){x.Quantity=1;fixedQty++;}
+    x["Profit Margin"]=x.Profit/(x.Sales===0?1:x.Sales);
+    const d=new Date(x["Order Date"]+"T00:00:00Z"); x.Month=d.getUTCMonth()+1; x.Year=d.getUTCFullYear();
+    return x;
+  });
+  return {rows:out,fixedSales,fixedQty,median:med};
+}
+const money=v=>"$"+v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+// mirrors calculate_kpis()
+function calcKpis(rows){
+  if(!rows.length) return null;
+  const sum=k=>rows.reduce((s,r)=>s+r[k],0), by={};
+  rows.forEach(r=>by[r.Category]=(by[r.Category]||0)+r.Sales);
+  const top=Object.keys(by).reduce((a,b)=>by[b]>by[a]?b:a);
+  return {"Total Revenue":money(sum("Sales")),"Total Profit":money(sum("Profit")),"Avg Order Value":money(sum("Sales")/rows.length),"Top Category":top,"Total Orders":rows.length,_byCat:by};
+}
+function filterRows(rows,from,to,region){
+  return rows.filter(r=>(!from||r["Order Date"]>=from)&&(!to||r["Order Date"]<=to)&&(region==="All regions"||r.Region===region));
+}
+function nextMonday9utc(now){
+  const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),9,0,0));
+  let add=(8-d.getUTCDay())%7; // 1 = Monday
+  d.setUTCDate(d.getUTCDate()+add);
+  if(d<=now) d.setUTCDate(d.getUTCDate()+7);
+  return d;
+}
+/*CORE-END*/
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const RAW=genData(20240115,720), CL=cleanData(RAW), ALL=CL.rows;
+const MIN=ALL[0]["Order Date"], MAX=ALL[ALL.length-1]["Order Date"];
+let cCat=null,cMon=null,current=[],reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+$("dsInfo").textContent=`${ALL.length} synthetic orders · ${MIN} to ${MAX} · seed 20240115`;
+$("from").min=$("to").min=MIN;$("from").max=$("to").max=MAX;
+$("from").value=MIN;$("to").value=MAX;
+$("cleanInfo").textContent=`Cleaning on the full dataset: ${CL.fixedSales} missing Sales filled with the median (${money(CL.median)}), ${CL.fixedQty} missing Quantity set to 1.`;
+
+function shiftDays(s,n){const d=new Date(s+"T00:00:00Z");d.setUTCDate(d.getUTCDate()+n);return iso(d);}
+document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{
+  const q=b.dataset.q;
+  if(q==="all"){$("from").value=MIN;$("to").value=MAX;}
+  if(q==="q1"){$("from").value="2024-01-01";$("to").value="2024-03-31";}
+  if(q==="q2"){$("from").value="2024-04-01";$("to").value=MAX;}
+  if(q==="last30"){$("from").value=shiftDays(MAX,-29);$("to").value=MAX;}
+  update();
+}));
+$("reset").addEventListener("click",()=>{$("from").value=MIN;$("to").value=MAX;$("region").value="All regions";update();});
+["from","to","region"].forEach(i=>$(i).addEventListener("change",update));
+
+function chartImage(byCat){
+  const cv=document.createElement("canvas");cv.width=800;cv.height=400;
+  const bg={id:"bg",beforeDraw(c){const x=c.ctx;x.save();x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.restore();}};
+  const ch=new Chart(cv,{type:"bar",data:{labels:Object.keys(byCat),datasets:[{data:Object.values(byCat),backgroundColor:"#2563EB"}]},
+    options:{responsive:false,animation:false,devicePixelRatio:1,plugins:{legend:{display:false},title:{display:true,text:"Revenue by Category",color:"#0f172a",font:{size:18,weight:"bold"}}},
+      scales:{x:{ticks:{color:"#334155"},grid:{display:false}},y:{ticks:{color:"#334155",callback:v=>"$"+v.toLocaleString()},grid:{color:"#e2e8f0"}}}},plugins:[bg]});
+  const url=cv.toDataURL("image/png");ch.destroy();return url;
+}
+
+function update(){
+  const from=$("from").value,to=$("to").value,msg=$("msg");
+  if(from&&to&&from>to){msg.textContent="“From” is after “To”. Swap the dates.";msg.className="status err";return;}
+  msg.textContent="";msg.className="status";
+  current=filterRows(ALL,from,to,$("region").value);
+  const k=calcKpis(current);
+  $("body").hidden=!k;$("emptyState").hidden=!!k;$("pdf").disabled=!k;
+  if(!k){return;}
+  const keys=["Total Revenue","Total Profit","Avg Order Value","Top Category","Total Orders"];
+  $("kpis").innerHTML=keys.map(n=>`<div class="kpi flash"><small>${n}</small><b>${esc(k[n])}</b></div>`).join("");
+  $("pSub").textContent=`${from||MIN} to ${to||MAX} · ${$("region").value} · synthetic data`;
+  $("pLines").innerHTML=keys.map(n=>`<div class="line"><span>${n}</span><b>${esc(k[n])}</b></div>`).join("");
+  $("pImg").src=chartImage(k._byCat);
+  drawCharts(k);
+  $("rowCount").textContent=`(${current.length} rows, first 40 shown)`;
+  $("rows").innerHTML=current.slice(0,40).map(r=>`<tr><td>${r["Order ID"]}</td><td>${r["Order Date"]}</td><td>${r.Category}</td><td>${r.Region}</td><td>${money(r.Sales)}</td><td>${money(r.Profit)}</td><td>${r.Quantity}</td></tr>`).join("");
+}
+
+function drawCharts(k){
+  Chart.defaults.color="#8a99b5";Chart.defaults.font.family="DM Sans";
+  const grid={color:"rgba(148,163,184,.1)"}, anim=reduced?false:{duration:500};
+  if(cCat)cCat.destroy();if(cMon)cMon.destroy();
+  cCat=new Chart($("cCat"),{type:"bar",data:{labels:Object.keys(k._byCat),datasets:[{label:"Revenue",data:Object.values(k._byCat),backgroundColor:"#2563EB",borderRadius:6}]},
+    options:{maintainAspectRatio:false,animation:anim,plugins:{legend:{display:false}},scales:{y:{grid,ticks:{callback:v=>"$"+v.toLocaleString()}},x:{grid:{display:false}}}}});
+  const m={};current.forEach(r=>{const key=r["Order Date"].slice(0,7);(m[key]=m[key]||{s:0,p:0});m[key].s+=r.Sales;m[key].p+=r.Profit;});
+  const labels=Object.keys(m).sort();
+  cMon=new Chart($("cMon"),{type:"line",data:{labels,datasets:[
+    {label:"Revenue",data:labels.map(l=>+m[l].s.toFixed(2)),borderColor:"#38bdf8",backgroundColor:"rgba(56,189,248,.15)",fill:true,tension:.3},
+    {label:"Profit",data:labels.map(l=>+m[l].p.toFixed(2)),borderColor:"#34d399",tension:.3}]},
+    options:{maintainAspectRatio:false,animation:anim,scales:{y:{grid,ticks:{callback:v=>"$"+v.toLocaleString()}},x:{grid:{display:false}}}}});
+}
+
+$("pdf").addEventListener("click",()=>window.print());
+
+$("nextRun").textContent=nextMonday9utc(new Date()).toISOString().replace("T"," ").slice(0,16)+" UTC";
+let running=false;
+$("run").addEventListener("click",async()=>{
+  if(running||!current.length)return;running=true;$("run").disabled=true;
+  const log=$("log");log.innerHTML="";
+  const k=calcKpis(current), ts=()=>new Date().toISOString().slice(11,19);
+  const add=(cls,t)=>{const d=document.createElement("div");d.innerHTML=`<span class="t">${ts()}</span> <span class="${cls}">${t}</span>`;log.appendChild(d);log.scrollTop=log.scrollHeight;return new Promise(r=>setTimeout(r,reduced?0:650));};
+  await add("t","[simulation] trigger: workflow_dispatch (manual)");
+  await add("in","🚀 Starting Retail Reporting Pipeline");
+  await add("ok",`✅ Loaded ${RAW.length} records (embedded synthetic data, not a file)`);
+  await add("ok",`✅ Data cleaned &amp; features engineered (${CL.fixedSales} Sales, ${CL.fixedQty} Quantity fixed)`);
+  await add("in",`KPIs for ${current.length} orders: Revenue ${k["Total Revenue"]}, Profit ${k["Total Profit"]}, AOV ${k["Avg Order Value"]}, Top ${esc(k["Top Category"])}`);
+  await add("ok","✅ Report ready in preview (the repo saves data/output/retail_report.pdf)");
+  await add("sk","⏭ send_report_email skipped: a browser demo cannot send email");
+  await add("ok","✅ Pipeline completed successfully (simulated)");
+  running=false;$("run").disabled=false;
+});
+update();
+</script>
+</body></html>

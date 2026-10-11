@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retail Analytics Platform | Live Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+:root{--accent:#34d399}
+.d-btn.primary{color:#04140e}
+.arch{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch;margin-top:26px}
+.stg{position:relative;padding:16px 14px;border:1px solid var(--border);background:var(--panel);text-align:center;transition:.25s}
+.stg:first-child{border-radius:16px 0 0 16px}.stg:last-child{border-radius:0 16px 16px 0}
+.stg+.stg{border-left:0}
+.stg i.fa{font-size:1.4rem;color:var(--muted);transition:.25s}
+.stg b{display:block;font:700 .92rem 'Syne',sans-serif;margin-top:6px}
+.stg small{color:var(--muted);font-size:.72rem;display:block;line-height:1.35;margin-top:2px}
+.stg.on{border-color:var(--accent);background:rgba(52,211,153,.1);box-shadow:0 0 0 1px var(--accent) inset,0 0 22px rgba(52,211,153,.18);z-index:1}
+.stg.on i.fa{color:var(--accent);transform:scale(1.15)}
+.stg.bad.on{border-color:var(--red);background:rgba(251,113,133,.1);box-shadow:0 0 0 1px var(--red) inset}
+.stg.bad.on i.fa{color:var(--red)}
+.stg:not(:last-child)::after{content:"\f054";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:.7rem;color:var(--muted);z-index:2;background:var(--bg);border-radius:50%;width:16px;height:16px;display:grid;place-items:center}
+@media(max-width:700px){.arch{grid-template-columns:1fr 1fr}.stg{border-radius:0!important;border-left:1px solid var(--border)!important}.stg:not(:last-child)::after{display:none}}
+.ctrl{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.ctrl label{font-size:.85rem;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
+input[type=range]{accent-color:var(--accent);width:170px}
+.status{font-size:.82rem;color:var(--muted)}
+.chartbox{position:relative;height:250px}
+.feed{max-height:310px;overflow:auto;display:grid;gap:6px;align-content:start;min-height:120px}
+.ev{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:8px 11px;border-radius:10px;font-size:.8rem;border:1px solid var(--border);animation:rise .3s both;background:rgba(2,6,18,.5)}
+.ev.rej{border-color:rgba(251,113,133,.3);background:rgba(251,113,133,.06)}
+.ev .id{font-family:'DM Mono',monospace;color:var(--muted)}
+.ev .why{color:#fecdd3;font-size:.78rem}
+@keyframes rise{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.empty{text-align:center;padding:34px 14px;color:var(--muted);border:1px dashed var(--border);border-radius:14px;font-size:.9rem}
+.empty i{display:block;font-size:1.6rem;color:var(--accent);margin-bottom:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button{padding:6px 12px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font:600 .78rem 'DM Mono',monospace;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--text);border-color:var(--accent);background:rgba(52,211,153,.1)}
+.tbl{max-height:300px}
+td.m,th.m{font-family:'DM Mono',monospace;font-size:.76rem}
+.kpi b.up{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.06);color:var(--accent)}}
+.counts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+pre{max-height:210px}
+.about{margin-top:26px;font-size:.85rem;color:var(--muted)}
+.about ul{margin:8px 0 0 18px}.about li{margin:5px 0}
+.mono{font-family:'DM Mono',monospace}
+</style></head>
+<body>
+<header class="d-top">
+  <a class="d-back" href="../index.html#projects"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+  <div class="d-links"><a class="d-btn" target="_blank" rel="noopener noreferrer" href="https://github.com/Nirrmitt/Retail-Analytics-Platform"><i class="fab fa-github"></i> Source code</a></div>
+</header>
+<main class="d-wrap">
+  <section class="d-hero">
+    <div class="d-live"><i></i> Live demo · runs in your browser</div>
+    <h1>Retail Analytics <span>Platform</span></h1>
+    <p>Transaction simulator → validated API → normalized database → live KPI dashboard. Start the stream and watch each transaction get checked, stored and counted, including the ones that get rejected.</p>
+    <div class="d-note"><b>About this demo:</b> a lightweight in-browser re-creation of the pipeline. The real project runs a Python simulator, a FastAPI + Pydantic + asyncpg backend, PostgreSQL 15 in Docker and a Streamlit dashboard. Here, JavaScript functions replicate the same validation rules, the 4-table schema and the KPI queries (<span class="mono">ingest.py</span>, <span class="mono">kpi.py</span>, <span class="mono">sales.py</span>) in memory. Nothing is sent to a server and the data is synthetic. The repo's simulator sends one transaction every 30 seconds; the speed slider here is just for demonstration. The ~15% “bad payloads” are injected by this demo to show rejection paths (toggle them off if you like), they are not real failure rates.</div>
+  </section>
+
+  <div class="arch" id="arch" role="group" aria-label="Pipeline stages">
+    <div class="stg" data-s="sim"><i class="fas fa-shuffle fa"></i><b>Simulator</b><small>generates payloads</small></div>
+    <div class="stg" data-s="api"><i class="fas fa-shield-halved fa"></i><b>FastAPI</b><small>Pydantic validation</small></div>
+    <div class="stg" data-s="db"><i class="fas fa-database fa"></i><b>PostgreSQL</b><small>normalized, 4 tables</small></div>
+    <div class="stg" data-s="dash"><i class="fas fa-chart-line fa"></i><b>Dashboard</b><small>KPIs &amp; charts</small></div>
+  </div>
+  <p class="status" id="stageNote" style="margin-top:8px" aria-live="polite">Idle. Press Start to begin streaming.</p>
+
+  <section class="d-card" style="margin-top:18px" aria-label="Controls">
+    <div class="ctrl">
+      <button class="d-btn primary" id="toggle" type="button"><i class="fas fa-play"></i> <span>Start stream</span></button>
+      <label for="speed">Speed <input type="range" id="speed" min="1" max="20" step="1" value="3" aria-valuetext="3 transactions per second"> <b id="speedV" class="mono">3 tx/s</b></label>
+      <label><input type="checkbox" id="bad" checked> Inject invalid payloads (~15%)</label>
+      <button class="d-btn" id="one" type="button"><i class="fas fa-bug"></i> Send one invalid</button>
+      <button class="d-btn" id="reset" type="button"><i class="fas fa-rotate-left"></i> Reset</button>
+    </div>
+  </section>
+
+  <section class="d-card" style="margin-top:18px" aria-label="KPIs">
+    <h2>Live KPIs <small>same query as <span class="mono">GET /api/v1/kpi/revenue</span>: completed orders, last 30 days</small></h2>
+    <div class="kpis" aria-live="off">
+      <div class="kpi"><small>Revenue</small><b id="kRev">$0.00</b></div>
+      <div class="kpi"><small>Orders</small><b id="kOrd">0</b></div>
+      <div class="kpi"><small>AOV (repo definition)</small><b id="kAov">$0.00</b></div>
+      <div class="kpi"><small>Revenue ÷ orders</small><b id="kAov2">$0.00</b></div>
+      <div class="kpi"><small>Accepted / rejected</small><b id="kAR">0 / 0</b></div>
+    </div>
+    <p class="status" style="margin-top:10px">The repo computes AOV as <span class="mono">AVG(line_total)</span>, i.e. the average per line item. “Revenue ÷ orders” is shown beside it as a per-order alternative.</p>
+  </section>
+
+  <div class="d-grid two">
+    <div class="d-card"><h2>Daily revenue <small>last 30 days · <span class="mono">/sales/daily-revenue</span></small></h2><div class="chartbox"><canvas id="cDaily" role="img" aria-label="Line chart of daily revenue over the last 30 days"></canvas></div></div>
+    <div class="d-card"><h2>Revenue by category <small>last 30 days · <span class="mono">/sales/category-revenue</span></small></h2><div class="chartbox"><canvas id="cCat" role="img" aria-label="Bar chart of revenue by product category"></canvas></div></div>
+  </div>
+
+  <div class="d-grid two">
+    <div class="d-card"><h2>Ingestion log <small>validation results</small></h2>
+      <div class="feed" id="feed" role="log" aria-live="polite"><div class="empty"><i class="fas fa-satellite-dish"></i>No transactions yet. Start the stream or send one invalid payload.</div></div>
+      <div class="sub status" style="margin:12px 0 6px">Latest payload</div><pre id="payload">Waiting for first payload…</pre>
+    </div>
+    <div class="d-card"><h2>In-memory database <small>normalized schema</small></h2>
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="counts" id="counts"></div>
+      <div class="tbl" id="tbl" role="tabpanel"></div>
+    </div>
+  </div>
+
+  <section class="d-card about">
+    <h2><i class="fas fa-circle-info" style="color:var(--accent)"></i> Rules replicated from the repo</h2>
+    <ul>
+      <li><b>Pydantic model</b> (<span class="mono">TransactionPayload</span>): <span class="mono">customer_id</span> must be a UUID, <span class="mono">product_ids</span> a list of UUIDs, <span class="mono">quantities</span> a non-empty list of ints; <span class="mono">payment_method</span> defaults to credit_card and <span class="mono">status</span> to completed. Failures return 422.</li>
+      <li><b>API check:</b> <span class="mono">len(product_ids) != len(quantities)</span> returns 400.</li>
+      <li><b>Database</b> (schema from <span class="mono">force_create_tables.py</span>): customer FK, status in completed / cancelled / refunded, quantity &gt; 0. A violation rolls the whole transaction back (500). Unknown product IDs are skipped, as in the endpoint; a transaction whose items were all skipped is stored with no line items and so doesn't count in the KPIs.</li>
+      <li><b>Not replicated:</b> asyncpg pooling, retries with backoff, Streamlit page layout, auto-refresh and persistence. Refreshing this page resets the store.</li>
+    </ul>
+  </section>
+  <p class="d-foot">Built by Nirrmit R. Tickoo</p>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script id="core">
+/*CORE-START*/
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const STATUSES=["completed","cancelled","refunded"], PAYMENTS=["credit_card","paypal","debit_card"];
+const CATEGORIES=["Electronics","Apparel","Home & Garden","Sports","Books"];
+const FIRST=["Ava","Liam","Noah","Mia","Zoe","Ethan","Isla","Leo","Nora","Omar","Priya","Kai","Lena","Mateo","Yara","Sam","Tara","Ivan","Hana","Ravi"];
+const LAST=["Rossi","Nguyen","Okafor","Silva","Kim","Haddad","Novak","Patel","Berg","Sato","Moreau","Khan","Lopez","Ivanov","Dube"];
+const COUNTRIES=["Canada","India","Brazil","Germany","Japan","Kenya","Mexico","Norway","Spain","Vietnam"];
+function uuid(rnd){const h=n=>Array.from({length:n},()=>Math.floor(rnd()*16).toString(16)).join("");return `${h(8)}-${h(4)}-4${h(3)}-${"89ab"[Math.floor(rnd()*4)]}${h(3)}-${h(12)}`;}
+const r2=v=>Math.round(v*100)/100;
+function pick(rnd,a){return a[Math.floor(rnd()*a.length)];}
+function sample(rnd,a,k){const c=a.slice(),o=[];for(let i=0;i<k;i++)o.push(c.splice(Math.floor(rnd()*c.length),1)[0]);return o;}
+
+// mirrors seed_data.py: 50 customers, 5 categories x 10 products, ~300 completed transactions over 90 days
+function makeStore(rnd, now){
+  const s={customers:[],products:[],transactions:[],items:[],accepted:0,rejected:0,reasons:{}};
+  for(let i=0;i<50;i++){const f=pick(rnd,FIRST),l=pick(rnd,LAST);s.customers.push({customer_id:uuid(rnd),email:`${f}.${l}${i}@example.com`.toLowerCase(),first_name:f,last_name:l,country:pick(rnd,COUNTRIES)});}
+  CATEGORIES.forEach(cat=>{for(let i=1;i<=10;i++){const cost=r2(10+rnd()*190),price=r2(cost*(1.2+rnd()*1.3));s.products.push({product_id:uuid(rnd),sku:`${cat.slice(0,3).toUpperCase()}-${String(i).padStart(3,"0")}`,name:`${cat} Item ${i}`,category:cat,unit_cost:cost,unit_price:price});}});
+  for(let n=0;n<300;n++){
+    const when=now-Math.floor(rnd()*90)*864e5-Math.floor(rnd()*24)*36e5;
+    const t={transaction_id:uuid(rnd),customer_id:pick(rnd,s.customers).customer_id,transaction_date:when,status:"completed",payment_method:pick(rnd,PAYMENTS)};
+    s.transactions.push(t);
+    for(let k=1+Math.floor(rnd()*3);k>0;k--){const p=pick(rnd,s.products),q=1+Math.floor(rnd()*5);s.items.push({transaction_id:t.transaction_id,product_id:p.product_id,quantity:q,unit_price:p.unit_price,line_total:r2(q*p.unit_price)});}
+  }
+  return s;
+}
+
+// valid simulator payload (scripts/live_simulator.py), optionally corrupted
+const FAULTS=["bad_customer_uuid","bad_product_uuid","empty_quantities","float_quantity","length_mismatch","zero_quantity","unknown_customer","bad_status","unknown_product"];
+function genPayload(rnd,store,fault){
+  const k=1+Math.floor(rnd()*3), prods=sample(rnd,store.products,k);
+  const p={customer_id:pick(rnd,store.customers).customer_id,product_ids:prods.map(x=>x.product_id),quantities:prods.map(()=>1+Math.floor(rnd()*4)),payment_method:pick(rnd,PAYMENTS)};
+  switch(fault){
+    case "bad_customer_uuid":p.customer_id="cust-"+Math.floor(rnd()*9999);break;
+    case "bad_product_uuid":p.product_ids[0]="SKU-"+Math.floor(rnd()*999);break;
+    case "empty_quantities":p.quantities=[];break;
+    case "float_quantity":p.quantities[0]=2.5;break;
+    case "length_mismatch":p.quantities.push(1);break;
+    case "zero_quantity":p.quantities[0]=0;break;
+    case "unknown_customer":p.customer_id=uuid(rnd);break;
+    case "bad_status":p.status="pending";break;
+    case "unknown_product":p.product_ids[0]=uuid(rnd);break;
+  }
+  return p;
+}
+
+// stage 1: Pydantic-like model validation (422); stage 2: endpoint checks (400); stage 3: DB constraints (500)
+function validateModel(p){
+  const errs=[];
+  if(typeof p.customer_id!=="string"||!UUID_RE.test(p.customer_id)) errs.push("customer_id: Input should be a valid UUID");
+  if(!Array.isArray(p.product_ids)) errs.push("product_ids: Input should be a valid list");
+  else p.product_ids.forEach((x,i)=>{if(typeof x!=="string"||!UUID_RE.test(x)) errs.push(`product_ids.${i}: Input should be a valid UUID`);});
+  if(!Array.isArray(p.quantities)||p.quantities.length<1) errs.push("quantities: List should have at least 1 item");
+  else p.quantities.forEach((q,i)=>{if(!Number.isInteger(q)) errs.push(`quantities.${i}: Input should be a valid integer`);});
+  return errs;
+}
+function ingest(store,p,now){
+  const errs=validateModel(p);
+  if(errs.length) return {ok:false,status:422,layer:"api",reason:errs[0]};
+  const payment=p.payment_method===undefined?"credit_card":p.payment_method, status=p.status===undefined?"completed":p.status;
+  if(p.product_ids.length!==p.quantities.length) return {ok:false,status:400,layer:"api",reason:"product_ids and quantities must match"};
+  if(!store.customers.some(c=>c.customer_id===p.customer_id)) return {ok:false,status:500,layer:"db",reason:"Ingestion failed: FK violation, customer_id not present in customers (rolled back)"};
+  if(!STATUSES.includes(status)) return {ok:false,status:500,layer:"db",reason:`Ingestion failed: CHECK constraint on status ('${status}' not allowed, rolled back)`};
+  const txn={transaction_id:uuid(Math.random),customer_id:p.customer_id,transaction_date:now,status,payment_method:payment}, items=[];
+  for(let i=0;i<p.product_ids.length;i++){
+    const prod=store.products.find(x=>x.product_id===p.product_ids[i]);
+    if(!prod) continue; // endpoint skips unknown products
+    if(!(p.quantities[i]>0)) return {ok:false,status:500,layer:"db",reason:`Ingestion failed: CHECK constraint on quantity (${p.quantities[i]} must be > 0, rolled back)`};
+    items.push({transaction_id:txn.transaction_id,product_id:prod.product_id,quantity:p.quantities[i],unit_price:prod.unit_price,line_total:r2(p.quantities[i]*prod.unit_price)});
+  }
+  store.transactions.push(txn);items.forEach(i=>store.items.push(i));
+  return {ok:true,status:201,layer:"db",transaction_id:txn.transaction_id,items:items.length};
+}
+function startOfDay(ms){const d=new Date(ms);d.setHours(0,0,0,0);return d.getTime();}
+// completed transactions joined to items within CURRENT_DATE - 30 days
+function recentLines(store,now){
+  const cutoff=startOfDay(now)-30*864e5, ok=new Map();
+  store.transactions.forEach(t=>{if(t.status==="completed"&&t.transaction_date>=cutoff)ok.set(t.transaction_id,t);});
+  return store.items.filter(i=>ok.has(i.transaction_id)).map(i=>Object.assign({t:ok.get(i.transaction_id)},i));
+}
+function kpis(store,now){
+  const L=recentLines(store,now), total=L.reduce((s,l)=>s+l.line_total,0), orders=new Set(L.map(l=>l.transaction_id)).size;
+  return {total_revenue:r2(total),order_count:orders,avg_order_value:L.length?r2(total/L.length):0,rev_per_order:orders?r2(total/orders):0};
+}
+function dailyRevenue(store,now){
+  const base=startOfDay(now),days=[];
+  for(let d=30;d>=0;d--) days.push(base-d*864e5);
+  const m=new Map(days.map(d=>[d,0]));
+  recentLines(store,now).forEach(l=>{const k=startOfDay(l.t.transaction_date);if(m.has(k))m.set(k,m.get(k)+l.line_total);});
+  return days.map(d=>({day:d,revenue:r2(m.get(d))}));
+}
+function categoryRevenue(store,now){
+  const byId=new Map(store.products.map(p=>[p.product_id,p])),m={};
+  recentLines(store,now).forEach(l=>{const c=byId.get(l.product_id).category;m[c]=(m[c]||0)+l.line_total;});
+  return Object.entries(m).map(([category,revenue])=>({category,revenue:r2(revenue)})).sort((a,b)=>b.revenue-a.revenue);
+}
+/*CORE-END*/
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=v=>"$"+v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let rnd,store,timer=null,running=false,cDaily,cCat,dirty=true,tab="transactions",lastKpi=null,seq=0;
+const short=u=>String(u).slice(0,8);
+
+function init(){
+  rnd=mulberry32(4242);store=makeStore(rnd,Date.now());seq=0;
+  $("feed").innerHTML='<div class="empty"><i class="fas fa-satellite-dish"></i>No transactions yet. Start the stream or send one invalid payload.</div>';
+  $("payload").textContent="Waiting for first payload…";
+  lastKpi=null;dirty=true;renderAll();
+}
+
+const stageEls={};document.querySelectorAll(".stg").forEach(e=>stageEls[e.dataset.s]=e);
+let stageTimers=[];
+function lightStages(seqStages,bad,msg){
+  stageTimers.forEach(clearTimeout);stageTimers=[];
+  const step=Math.max(40,Math.min(260,(1000/ +$("speed").value)/5));
+  seqStages.forEach((s,i)=>stageTimers.push(setTimeout(()=>{
+    Object.values(stageEls).forEach(e=>e.classList.remove("on","bad"));
+    stageEls[s].classList.add("on");if(bad&&i===seqStages.length-1)stageEls[s].classList.add("bad");
+    if(i===seqStages.length-1)$("stageNote").textContent=msg;
+  },reduced?0:i*step)));
+  if(!running)stageTimers.push(setTimeout(()=>Object.values(stageEls).forEach(e=>e.classList.remove("on","bad")),(seqStages.length+3)*step));
+}
+
+function send(fault){
+  const payload=genPayload(rnd,store,fault);
+  const res=ingest(store,payload,Date.now());
+  seq++;
+  if(res.ok){store.accepted++;}
+  else{store.rejected++;const k=res.status+" "+(res.layer==="db"?"DB constraint":res.status===400?"API check":"validation");store.reasons[k]=(store.reasons[k]||0)+1;}
+  const feed=$("feed");if(feed.querySelector(".empty"))feed.innerHTML="";
+  const d=document.createElement("div");d.className="ev"+(res.ok?"":" rej");
+  d.innerHTML=res.ok
+    ?`<span class="tag ok">201</span><span><span class="id">${short(res.transaction_id)}</span> inserted: 1 order, ${res.items} line item${res.items===1?"":"s"}</span><span class="status">#${seq}</span>`
+    :`<span class="tag bad">${res.status}</span><span><b>Rejected</b> <span class="why">${esc(res.reason)}</span></span><span class="status">#${seq}</span>`;
+  feed.prepend(d);while(feed.children.length>40)feed.lastChild.remove();
+  $("payload").textContent=JSON.stringify(Object.assign({},payload),null,2);
+  const note=res.ok?`Transaction #${seq} stored; KPIs refreshed.`:`Transaction #${seq} rejected (${res.status}) at ${res.layer==="db"?"the database":"the API"}.`;
+  if(res.ok)lightStages(["sim","api","db","dash"],false,note);
+  else lightStages(res.layer==="db"?["sim","api","db"]:["sim","api"],true,note);
+  dirty=true;
+}
+function tick(){send($("bad").checked&&rnd()<.15?FAULTS[Math.floor(rnd()*FAULTS.length)]:undefined);}
+
+function setRate(){
+  const v=+$("speed").value;$("speedV").textContent=v+" tx/s";$("speed").setAttribute("aria-valuetext",v+" transactions per second");
+  if(running){clearInterval(timer);timer=setInterval(tick,1000/v);}
+}
+$("speed").addEventListener("input",setRate);
+$("toggle").addEventListener("click",()=>{
+  running=!running;
+  $("toggle").innerHTML=running?'<i class="fas fa-pause"></i> <span>Pause stream</span>':'<i class="fas fa-play"></i> <span>Resume stream</span>';
+  if(running){timer=setInterval(tick,1000/+$("speed").value);$("stageNote").textContent="Streaming…";}
+  else{clearInterval(timer);$("stageNote").textContent="Paused. Data is kept; press Resume to continue.";}
+});
+$("one").addEventListener("click",()=>send(FAULTS[Math.floor(rnd()*FAULTS.length)]));
+$("reset").addEventListener("click",()=>{running=false;clearInterval(timer);$("toggle").innerHTML='<i class="fas fa-play"></i> <span>Start stream</span>';$("stageNote").textContent="Reset. Press Start to begin streaming.";init();});
+
+const TABS={customers:["customer_id","email","first_name","last_name","country"],products:["product_id","sku","name","category","unit_cost","unit_price"],
+  transactions:["transaction_id","customer_id","transaction_date","status","payment_method"],transaction_items:["transaction_id","product_id","quantity","unit_price","line_total"]};
+function rowsFor(name){
+  if(name==="customers")return store.customers.slice(-8).reverse();
+  if(name==="products")return store.products.slice(-8).reverse();
+  if(name==="transactions")return store.transactions.slice(-10).reverse();
+  return store.items.slice(-10).reverse();
+}
+function cell(col,v){
+  if(col.endsWith("_id"))return `<td class="m" title="${esc(v)}">${short(v)}…</td>`;
+  if(col==="transaction_date")return `<td class="m">${new Date(v).toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}</td>`;
+  if(typeof v==="number"&&col!=="quantity")return `<td class="m">${money(v)}</td>`;
+  return `<td>${esc(v)}</td>`;
+}
+function renderTables(){
+  const tabs=$("tabs");
+  if(!tabs.children.length){
+    Object.keys(TABS).forEach(n=>{const b=document.createElement("button");b.type="button";b.role="tab";b.dataset.t=n;b.textContent=n;b.onclick=()=>{tab=n;renderTables();};tabs.appendChild(b);});
+  }
+  [...tabs.children].forEach(b=>b.setAttribute("aria-selected",b.dataset.t===tab));
+  const counts={customers:store.customers.length,products:store.products.length,transactions:store.transactions.length,transaction_items:store.items.length};
+  $("counts").innerHTML=Object.entries(counts).map(([k,v])=>`<span class="tag info">${k}: ${v}</span>`).join("");
+  const cols=TABS[tab], rows=rowsFor(tab);
+  $("tbl").innerHTML=`<table><caption class="status" style="text-align:left;margin-bottom:6px">Showing the latest ${rows.length} rows. Table is normalized: ids link orders to customers and products.</caption><thead><tr>${cols.map(c=>`<th class="m">${c}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>cell(c,r[c])).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function renderKpis(){
+  const k=kpis(store,Date.now()),set=(id,v)=>{const e=$(id);if(e.textContent!==v){e.textContent=v;if(!reduced){e.classList.remove("up");void e.offsetWidth;e.classList.add("up");}}};
+  set("kRev",money(k.total_revenue));set("kOrd",String(k.order_count));set("kAov",money(k.avg_order_value));set("kAov2",money(k.rev_per_order));
+  set("kAR",store.accepted+" / "+store.rejected);
+}
+function renderCharts(){
+  const now=Date.now(),dr=dailyRevenue(store,now),cr=categoryRevenue(store,now);
+  const labels=dr.map(d=>new Date(d.day).toLocaleDateString([], {month:"short",day:"numeric"}));
+  if(!cDaily){
+    Chart.defaults.color="#8a99b5";Chart.defaults.font.family="DM Sans";
+    const grid={color:"rgba(148,163,184,.1)"};
+    cDaily=new Chart($("cDaily"),{type:"line",data:{labels,datasets:[{label:"Revenue",data:dr.map(d=>d.revenue),borderColor:"#34d399",backgroundColor:"rgba(52,211,153,.15)",fill:true,tension:.3,pointRadius:0}]},options:{maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{y:{grid,beginAtZero:true,ticks:{callback:v=>"$"+v.toLocaleString()}},x:{grid:{display:false},ticks:{maxTicksLimit:8}}}}});
+    cCat=new Chart($("cCat"),{type:"bar",data:{labels:cr.map(c=>c.category),datasets:[{data:cr.map(c=>c.revenue),backgroundColor:["#34d399","#38bdf8","#818cf8","#fbbf24","#fb7185"],borderRadius:6}]},options:{maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{y:{grid,beginAtZero:true,ticks:{callback:v=>"$"+v.toLocaleString()}},x:{grid:{display:false}}}}});
+  }else{
+    cDaily.data.labels=labels;cDaily.data.datasets[0].data=dr.map(d=>d.revenue);cDaily.update("none");
+    cCat.data.labels=cr.map(c=>c.category);cCat.data.datasets[0].data=cr.map(c=>c.revenue);cCat.update("none");
+  }
+}
+function renderAll(){renderKpis();renderCharts();renderTables();}
+// batch UI work so high stream speeds stay smooth
+setInterval(()=>{if(dirty){dirty=false;renderAll();}},300);
+init();
+</script>
+</body></html>

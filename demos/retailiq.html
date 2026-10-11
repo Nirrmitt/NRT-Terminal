@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RetailIQ | Live Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+:root{--accent:#2dd4bf}
+button{font-family:inherit}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row .grow{flex:1;min-width:200px}
+.hint{color:var(--muted);font-size:.8rem;margin-top:8px}
+kbd{font:500 .72rem 'DM Mono',monospace;border:1px solid var(--border);border-radius:5px;padding:1px 6px;background:rgba(2,6,18,.6)}
+.check{list-style:none;display:grid;gap:8px}
+.check li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(2,6,18,.45);font-size:.88rem;animation:rise .35s ease both}
+.check li i{margin-top:3px;width:16px;text-align:center}
+.check li.pass i{color:var(--green)}.check li.fail{border-color:rgba(251,113,133,.35)}.check li.fail i{color:var(--red)}
+.check li.skip i{color:var(--muted)}
+.check li small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+.check li.extra{border-style:dashed}
+.sub{font:600 .72rem 'DM Sans';letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.verdict{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.k{color:#7dd3fc}.s{color:#fcd34d}.n{color:#c4b5fd}.f{color:#5eead4}
+.empty{color:var(--muted);border:1px dashed var(--border);border-radius:14px;padding:26px;text-align:center;font-size:.9rem}
+.empty i{display:block;font-size:1.4rem;margin-bottom:8px;color:var(--accent);opacity:.8}
+.switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:.88rem;font-weight:600}
+.switch input{position:absolute;opacity:0}
+.switch .tr{width:40px;height:22px;border-radius:99px;background:rgba(148,163,184,.25);position:relative;transition:.2s;flex:none}
+.switch .tr::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#e2e8f0;transition:.2s}
+.switch input:checked+.tr{background:var(--accent)}
+.switch input:checked+.tr::after{transform:translateX(18px);background:#06101f}
+.switch input:focus-visible+.tr{outline:2px solid var(--accent);outline-offset:3px}
+.sample-badge{display:inline-flex;gap:6px;align-items:center}
+.chartbox{position:relative;height:280px;margin-top:14px}
+details{margin-top:14px}summary{cursor:pointer;color:var(--muted);font-size:.85rem}
+summary:focus-visible,.chip:focus-visible,.d-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.d-card{animation:rise .4s ease both}
+</style></head>
+<body>
+<header class="d-top">
+  <a class="d-back" href="../index.html#projects"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+  <div class="d-links"><a class="d-btn" target="_blank" rel="noopener noreferrer" href="https://github.com/Nirrmitt/Sense-your-data"><i class="fab fa-github"></i> Source code</a></div>
+</header>
+<main class="d-wrap">
+  <section class="d-hero">
+    <div class="d-live"><i></i> Live demo · runs in your browser</div>
+    <h1>RetailIQ <span>query preview &amp; SQL safety check</span></h1>
+    <p>Ask a retail question and get a read-only PostgreSQL <code>SELECT</code> preview, then see it pass through the same kind of safety guard the RetailIQ API applies before returning SQL. Paste your own SQL to see whether it would be accepted or rejected.</p>
+    <div class="d-note"><b>About this demo:</b> this is a lightweight in-browser version. The real app (FastAPI + Streamlit + PostgreSQL) sends your question to an LLM (OpenRouter or OpenAI) to write the SQL, and it <u>does not execute</u> the SQL; there is no RAG either. Here there is no model: questions are matched against a small set of offline templates, so unusual phrasing will not be understood. The safety checks 1–4 below mirror the repo's regex-based <code>is_safe_query()</code>, which is a lightweight filter, not a SQL parser or a database permission system. The schema allow-list is a demo extra. The optional "Run on sample data" mode uses a small synthetic dataset and a handful of supported query shapes, not a database.</div>
+  </section>
+
+  <div class="d-grid two">
+    <section class="d-card" aria-labelledby="h-ask">
+      <h2 id="h-ask"><i class="fas fa-comment-dots" style="color:var(--accent)"></i> Ask a question <small>offline templates, no LLM</small></h2>
+      <label class="d-l" for="q">Retail question</label>
+      <div class="row">
+        <input class="grow" type="text" id="q" maxlength="2100" placeholder="e.g. Which five products have the highest price?" autocomplete="off">
+        <button class="d-btn primary" id="askBtn" type="button"><i class="fas fa-wand-magic-sparkles"></i> Build query</button>
+      </div>
+      <div class="d-chips" id="chips" role="group" aria-label="Example questions"></div>
+      <p class="hint">Press <kbd>Enter</kbd> to submit. The real API trims whitespace and accepts 1–2,000 characters.</p>
+    </section>
+    <section class="d-card" aria-labelledby="h-sql">
+      <h2 id="h-sql"><i class="fas fa-shield-halved" style="color:var(--accent)"></i> Or test your own SQL <small>as if a model returned it</small></h2>
+      <label class="d-l" for="sqlIn">SQL</label>
+      <textarea id="sqlIn" spellcheck="false" placeholder="SELECT name, price FROM products ORDER BY price DESC LIMIT 3"></textarea>
+      <div class="d-chips" id="sqlChips" role="group" aria-label="Example SQL to try"></div>
+      <div class="row"><button class="d-btn primary" id="checkBtn" type="button"><i class="fas fa-circle-check"></i> Check SQL</button><span class="hint" style="margin:0">or <kbd>Ctrl</kbd>+<kbd>Enter</kbd></span></div>
+    </section>
+  </div>
+
+  <div class="d-card" style="margin-top:18px">
+    <div class="row" style="justify-content:space-between">
+      <label class="switch"><input type="checkbox" id="runToggle"><span class="tr" aria-hidden="true"></span><span>Run on sample data <small style="color:var(--muted);font-weight:500">(optional · demo only · the real app never executes SQL)</small></span></label>
+      <span class="tag warn sample-badge"><i class="fas fa-flask"></i> Synthetic sample data</span>
+    </div>
+  </div>
+
+  <div class="d-grid two" id="results" aria-live="polite">
+    <section class="d-card" aria-labelledby="h-prev">
+      <h2 id="h-prev"><i class="fas fa-code" style="color:var(--accent)"></i> SQL preview &amp; safety checks</h2>
+      <div id="preview"><div class="empty"><i class="fas fa-magnifying-glass-chart"></i>Pick an example or type a question to see the generated SQL and how it is validated.</div></div>
+    </section>
+    <section class="d-card" aria-labelledby="h-json">
+      <h2 id="h-json"><i class="fas fa-server" style="color:var(--accent)"></i> API response <small>mirrors <code>POST /sql</code></small></h2>
+      <div id="json"><div class="empty"><i class="fas fa-server"></i>The request/response pair appears here, shaped like the repo's FastAPI endpoint.</div></div>
+    </section>
+  </div>
+
+  <section class="d-card" style="margin-top:18px" id="sampleCard" aria-labelledby="h-run" hidden>
+    <h2 id="h-run"><i class="fas fa-table" style="color:var(--accent)"></i> Sample-data result <small>synthetic data · evaluated in JS, not PostgreSQL</small></h2>
+    <div id="runOut"></div>
+  </section>
+
+  <details class="d-card" style="margin-top:18px">
+    <summary>Schema used by the repo (<code>setup_db.py</code>) and the synthetic sample rows</summary>
+    <div class="tbl" style="margin-top:12px"><table><thead><tr><th>Table</th><th>Columns</th></tr></thead><tbody>
+      <tr><td><code>products</code></td><td><code>id</code> int PK · <code>name</code> varchar(255) · <code>category</code> varchar(100) · <code>price</code> float</td></tr>
+      <tr><td><code>sales</code></td><td><code>id</code> int PK · <code>product_id</code> int (no declared FK) · <code>quantity</code> int · <code>date</code> varchar(50)</td></tr></tbody></table></div>
+    <p class="hint" id="sampleInfo"></p>
+    <div class="tbl" id="sampleProducts"></div>
+  </details>
+
+  <p class="d-foot">Built by Nirrmit R. Tickoo</p>
+</main>
+
+<script id="core">
+/* ---------- Pure logic (testable in Node) ---------- */
+const SCHEMA = {
+  products: ['id', 'name', 'category', 'price'],
+  sales: ['id', 'product_id', 'quantity', 'date']
+};
+const FORBIDDEN = /\b(insert|update|delete|drop|truncate|alter|create|grant|revoke|copy|call|do|set|reset|into)\b/i;
+const SQL_WORDS = new Set(('select from where group by order limit offset join inner left right full outer cross on and or not as asc desc count sum avg min max distinct having in like ilike between is null case when then else end true false round coalesce cast numeric int integer float text varchar substring length lower upper union all exists using nulls first last over partition with date_trunc to_char to_date extract month year for').split(' '));
+
+/* Mirrors is_safe_query() in main.py, but reports each rule separately. */
+function checkSafety(query) {
+  const st = String(query == null ? '' : query).trim();
+  const startsSelect = /^select\b/i.test(st);
+  const body = st.endsWith(';') ? st.slice(0, -1) : st;
+  const multi = body.includes(';');
+  const comment = st.includes('--') || st.includes('/*');
+  const kw = st.match(FORBIDDEN);
+  const checks = [
+    { id: 'select', label: 'Begins with SELECT', pass: startsSelect,
+      detail: startsSelect ? 'Read-only statement type.' : (st ? 'Statement must start with SELECT.' : 'Empty statement.') },
+    { id: 'single', label: 'Single statement (at most one trailing semicolon)', pass: !multi,
+      detail: multi ? 'Found a semicolon before the end: multiple statements are rejected.' : 'No stacked statements.' },
+    { id: 'comments', label: 'No SQL comments (-- or /* */)', pass: !comment,
+      detail: comment ? 'Comments are rejected because they can hide trailing SQL.' : 'No comment markers found.' },
+    { id: 'keywords', label: 'No write/administrative keywords', pass: !kw,
+      detail: kw ? 'Found forbidden keyword "' + kw[1].toUpperCase() + '".' : 'None of INSERT, UPDATE, DELETE, DROP, TRUNCATE, ALTER, CREATE, GRANT, REVOKE, COPY, CALL, DO, SET, RESET, INTO.' }
+  ];
+  return { checks, repoSafe: checks.every(function (c) { return c.pass; }), statement: st };
+}
+
+/* Demo-only heuristic: the repo only tells the model the schema in its prompt. */
+function checkSchema(query) {
+  const s = String(query).replace(/'(?:[^']|'')*'/g, "''").replace(/;\s*$/, '');
+  const aliasToTable = {}, tables = [], badTables = [];
+  const re = /\b(?:from|join)\s+([a-z_]\w*)(?:\s+(?:as\s+)?([a-z_]\w*))?/gi;
+  let m;
+  while ((m = re.exec(s))) {
+    const t = m[1].toLowerCase();
+    tables.push(t);
+    if (!SCHEMA[t]) { if (badTables.indexOf(t) < 0) badTables.push(t); continue; }
+    aliasToTable[t] = t;
+    const a = m[2] && m[2].toLowerCase();
+    if (a && !SQL_WORDS.has(a)) aliasToTable[a] = t;
+  }
+  const aliases = new Set();
+  const asRe = /\bas\s+([a-z_]\w*)/gi;
+  while ((m = asRe.exec(s))) aliases.add(m[1].toLowerCase());
+  const used = Object.keys(aliasToTable).map(function (k) { return aliasToTable[k]; });
+  const cols = new Set();
+  (used.length ? used : Object.keys(SCHEMA)).forEach(function (t) { SCHEMA[t].forEach(function (c) { cols.add(c); }); });
+  const badCols = [];
+  const note = function (x) { if (badCols.indexOf(x) < 0) badCols.push(x); };
+  s.replace(/\b([a-z_]\w*)\.([a-z_]\w*|\*)/gi, function (all, q, c) {
+    const t = aliasToTable[q.toLowerCase()];
+    if (!t) note(all);
+    else if (c !== '*' && SCHEMA[t].indexOf(c.toLowerCase()) < 0) note(all);
+    return all;
+  });
+  const rest = s.replace(/\b[a-z_]\w*\.(?:[a-z_]\w*|\*)/gi, ' ').replace(/\b\d+(?:\.\d+)?\b/g, ' ');
+  const tok = /[a-z_]\w*/gi;
+  while ((m = tok.exec(rest))) {
+    const w = m[0].toLowerCase();
+    if (SQL_WORDS.has(w) || aliases.has(w) || aliasToTable[w] || tables.indexOf(w) >= 0 || cols.has(w)) continue;
+    note(m[0]);
+  }
+  return {
+    tables: { pass: badTables.length === 0, found: tables,
+      detail: badTables.length ? 'Not in schema: ' + badTables.join(', ') + '. Allowed: products, sales.' : (tables.length ? 'Uses only: ' + tables.join(', ') + '.' : 'No table referenced.') },
+    columns: { pass: badCols.length === 0,
+      detail: badCols.length ? 'Unknown column/identifier: ' + badCols.join(', ') + '.' : 'All columns exist in the referenced tables.' }
+  };
+}
+
+/* ---------- Offline question -> SQL templates (stand-in for the LLM) ---------- */
+const CATEGORIES = ['Electronics', 'Home', 'Grocery', 'Apparel'];
+const NUMWORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+function pickN(q, dflt) {
+  const d = q.match(/\b(\d{1,2})\b/);
+  if (d) return Math.max(1, +d[1]);
+  const w = q.toLowerCase().match(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\b/);
+  return w ? NUMWORDS[w[1]] : dflt;
+}
+function questionToSql(question) {
+  const q = String(question).trim();
+  const l = q.toLowerCase();
+  const cat = CATEGORIES.find(function (c) { return l.indexOf(c.toLowerCase()) >= 0; });
+  if (/revenue|sales value|money|earn/.test(l))
+    return 'SELECT p.category, SUM(s.quantity * p.price) AS revenue FROM sales s JOIN products p ON p.id = s.product_id GROUP BY p.category ORDER BY revenue DESC';
+  if (/month|trend|over time/.test(l))
+    return 'SELECT LEFT(date, 7) AS month, SUM(quantity) AS units_sold FROM sales GROUP BY 1 ORDER BY 1';
+  if (/average|avg|mean/.test(l))
+    return 'SELECT category, AVG(price) AS avg_price FROM products GROUP BY category ORDER BY avg_price DESC';
+  if (/how many|count|number of/.test(l) && /categor/.test(l))
+    return 'SELECT category, COUNT(*) AS product_count FROM products GROUP BY category ORDER BY product_count DESC';
+  if (/total (units|quantity|items)|how many (units|items) .*sold|units sold in total/.test(l) && !/product/.test(l))
+    return 'SELECT SUM(quantity) AS total_units FROM sales';
+  if (/best.?sell|most sold|top.*(sell|sold)|units sold|sold the most|quantity/.test(l))
+    return 'SELECT p.name, SUM(s.quantity) AS total_units FROM sales s JOIN products p ON p.id = s.product_id GROUP BY p.name ORDER BY total_units DESC LIMIT ' + pickN(l, 5);
+  if (cat && /product|item|list|show|what|which/.test(l))
+    return "SELECT name, price FROM products WHERE category = '" + cat + "' ORDER BY price DESC";
+  if (/price|expensive|cheap|cost/.test(l)) {
+    const asc = /cheap|lowest|least|smallest/.test(l);
+    return 'SELECT name, price FROM products ORDER BY price ' + (asc ? 'ASC' : 'DESC') + ' LIMIT ' + pickN(l, 5);
+  }
+  return null;
+}
+
+/* ---------- Synthetic sample data ---------- */
+const PRODUCTS = [
+  [1, 'Wireless Earbuds', 'Electronics', 59.99], [2, 'USB-C Hub', 'Electronics', 34.5],
+  [3, 'Smart Watch', 'Electronics', 149], [4, 'Bluetooth Speaker', 'Electronics', 79],
+  [5, 'Ceramic Mug Set', 'Home', 24], [6, 'LED Desk Lamp', 'Home', 39.9],
+  [7, 'Throw Blanket', 'Home', 45], [8, 'Organic Coffee Beans', 'Grocery', 14.5],
+  [9, 'Olive Oil 1L', 'Grocery', 11.99], [10, 'Dark Chocolate Bar', 'Grocery', 4.25],
+  [11, 'Cotton T-Shirt', 'Apparel', 19.99], [12, 'Running Socks 3-Pack', 'Apparel', 12]
+].map(function (r) { return { id: r[0], name: r[1], category: r[2], price: r[3] }; });
+const SALES = (function () {
+  let seed = 20250101;
+  const rnd = function () { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+  const out = [];
+  for (let i = 1; i <= 150; i++) {
+    const d = new Date(Date.UTC(2025, 0, 1 + Math.floor(rnd() * 181)));
+    out.push({ id: i, product_id: 1 + Math.floor(rnd() * PRODUCTS.length), quantity: 1 + Math.floor(rnd() * 8), date: d.toISOString().slice(0, 10) });
+  }
+  return out;
+})();
+const round2 = function (n) { return Math.round(n * 100) / 100; };
+const byId = function (id) { return PRODUCTS.find(function (p) { return p.id === id; }); };
+
+function groupSum(keyFn, valFn) {
+  const m = new Map();
+  SALES.forEach(function (s) { const k = keyFn(s); m.set(k, (m.get(k) || 0) + valFn(s)); });
+  return Array.from(m.entries());
+}
+function sortRows(rows, ob, alias, expr, col) {
+  if (ob == null) return { rows: rows.sort(function (a, b) { return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0; }) };
+  const o = ob.toLowerCase();
+  if (o !== (alias || '').toLowerCase() && o !== expr) return { err: 'ORDER BY "' + ob + '" is not a supported form for this query shape.' };
+  return { rows: rows.sort(function (a, b) { return b[col] - a[col] || (a[0] < b[0] ? -1 : 1); }) };
+}
+function norm(sql) {
+  return String(sql).trim().replace(/;\s*$/, '').replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
+}
+
+/* Evaluates only a handful of query shapes against the synthetic data. */
+function runSample(sql) {
+  const n = norm(sql);
+  let m;
+  const unsupported = { ok: false, reason: 'This query shape is not one of the demo\'s supported sample-data shapes (price ranking, category counts/averages, units or revenue by product/category, monthly units, products in a category, total units). Real execution would need PostgreSQL.' };
+  if ((m = n.match(/^select name, price from products order by price (asc|desc)(?: limit (\d+))?$/i))) {
+    const rows = PRODUCTS.slice().sort(function (a, b) { return (m[1].toLowerCase() === 'asc' ? 1 : -1) * (a.price - b.price) || a.id - b.id; });
+    const lim = m[2] ? rows.slice(0, +m[2]) : rows;
+    return done(['name', 'price'], lim.map(function (p) { return [p.name, p.price]; }), 'bar', 1, 'Price (USD)');
+  }
+  if ((m = n.match(/^select name, price from products where category = '([^']*)' order by price (asc|desc)$/i))) {
+    const rows = PRODUCTS.filter(function (p) { return p.category === m[1]; }).sort(function (a, b) { return (m[2].toLowerCase() === 'asc' ? 1 : -1) * (a.price - b.price); });
+    return done(['name', 'price'], rows.map(function (p) { return [p.name, p.price]; }), 'bar', 1, 'Price (USD)');
+  }
+  if ((m = n.match(/^select category, (count\(\*\)|avg\(price\))(?: as (\w+))? from products group by category(?: order by (\w+|count\(\*\)|avg\(price\)) desc)?$/i))) {
+    const isCount = m[1].toLowerCase() === 'count(*)';
+    const g = new Map();
+    PRODUCTS.forEach(function (p) { const a = g.get(p.category) || []; a.push(p.price); g.set(p.category, a); });
+    let rows = Array.from(g.entries()).map(function (e) { return [e[0], isCount ? e[1].length : round2(e[1].reduce(function (x, y) { return x + y; }, 0) / e[1].length)]; });
+    const r = sortRows(rows, m[3], m[2], m[1].toLowerCase(), 1);
+    if (r.err) return { ok: false, reason: r.err };
+    return done(['category', m[2] || (isCount ? 'count' : 'avg')], r.rows, 'bar', 1, isCount ? 'Products' : 'Avg price (USD)');
+  }
+  if ((m = n.match(/^select p\.name, sum\(s\.quantity\)(?: as (\w+))? from sales s join products p on p\.id = s\.product_id group by p\.name(?: order by (\w+|sum\(s\.quantity\)) desc)?(?: limit (\d+))?$/i))) {
+    const rows = groupSum(function (s) { return byId(s.product_id).name; }, function (s) { return s.quantity; });
+    const r = sortRows(rows, m[2], m[1], 'sum(s.quantity)', 1);
+    if (r.err) return { ok: false, reason: r.err };
+    return done(['name', m[1] || 'sum'], m[3] ? r.rows.slice(0, +m[3]) : r.rows, 'bar', 1, 'Units sold');
+  }
+  if ((m = n.match(/^select p\.category, sum\((?:s\.quantity \* p\.price|p\.price \* s\.quantity)\)(?: as (\w+))? from sales s join products p on p\.id = s\.product_id group by p\.category(?: order by (\w+) desc)?$/i))) {
+    const rows = groupSum(function (s) { return byId(s.product_id).category; }, function (s) { return s.quantity * byId(s.product_id).price; }).map(function (e) { return [e[0], round2(e[1])]; });
+    const r = sortRows(rows, m[2], m[1], '\u0000', 1);
+    if (r.err) return { ok: false, reason: r.err };
+    return done(['category', m[1] || 'sum'], r.rows, 'bar', 1, 'Revenue (USD)');
+  }
+  if ((m = n.match(/^select left\(date, 7\)(?: as (\w+))?, sum\(quantity\)(?: as (\w+))? from sales group by 1(?: order by 1)?$/i))) {
+    const rows = groupSum(function (s) { return s.date.slice(0, 7); }, function (s) { return s.quantity; }).sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
+    return done([m[1] || 'left', m[2] || 'sum'], rows, 'line', 1, 'Units sold');
+  }
+  if ((m = n.match(/^select sum\(quantity\)(?: as (\w+))? from sales$/i))) {
+    const t = SALES.reduce(function (a, s) { return a + s.quantity; }, 0);
+    return done([m[1] || 'sum'], [[t]], null, 0, '');
+  }
+  return unsupported;
+  function done(columns, rows, chart, valCol, label) { return { ok: true, columns, rows, chart, valCol, label }; }
+}
+</script>
+
+<script id="ui">
+/* ---------- UI ---------- */
+const $ = function (id) { return document.getElementById(id); };
+const esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+const KW_HL = /\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY|LIMIT|JOIN|ON|AS|ASC|DESC|AND|OR|NOT|LEFT)\b/gi;
+function sqlHtml(sql) {
+  return esc(sql)
+    .replace(/(&#39;|')([^']*)(&#39;|')/g, '<span class="s">\'$2\'</span>')
+    .replace(/\b(SUM|COUNT|AVG|MIN|MAX|ROUND)\b(?=\()/gi, '<span class="f">$1</span>')
+    .replace(KW_HL, function (w) { return '<span class="k">' + w.toUpperCase() + '</span>'; })
+    .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="n">$1</span>');
+}
+const EXAMPLE_Q = ['Which five products have the highest price?', 'What are the cheapest 3 products?', 'Show Electronics products', 'Total revenue by category', 'Best selling products', 'Units sold per month', 'How many products are in each category?', 'Average price by category'];
+const EXAMPLE_SQL = [
+  ['Valid SELECT', 'SELECT name, price FROM products ORDER BY price DESC LIMIT 3'],
+  ['Stacked DROP', 'SELECT * FROM products; DROP TABLE sales;'],
+  ['UPDATE', "UPDATE products SET price = 0 WHERE category = 'Home'"],
+  ['Comment trick', 'SELECT name FROM products -- WHERE 1=1'],
+  ['Unknown table', 'SELECT * FROM customers'],
+  ['Unknown column', 'SELECT name, color FROM products']
+];
+let lastSql = null, chart = null, lastRender = null;
+
+function mkChips(host, items, cb) {
+  items.forEach(function (it) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = Array.isArray(it) ? it[0] : it;
+    b.addEventListener('click', function () { cb(Array.isArray(it) ? it[1] : it); });
+    host.appendChild(b);
+  });
+}
+mkChips($('chips'), EXAMPLE_Q, function (q) { $('q').value = q; askQuestion(); });
+mkChips($('sqlChips'), EXAMPLE_SQL, function (s) { $('sqlIn').value = s; checkSql(); });
+
+function li(cls, icon, label, detail, extra) {
+  return '<li class="' + cls + (extra ? ' extra' : '') + '"><i class="fas ' + icon + '" aria-hidden="true"></i><div><span class="sr-only"></span>' + label + '<small>' + esc(detail) + '</small></div></li>';
+}
+function showResult(r) {
+  lastRender = r;
+  const rs = r.safety;
+  let h = '';
+  if (r.note) h += '<p class="hint" style="margin:0 0 12px">' + esc(r.note) + '</p>';
+  if (r.sql != null) {
+    h += '<pre aria-label="SQL preview">' + sqlHtml(r.sql) + '</pre>';
+    const sch = r.schema;
+    h += '<div class="verdict" style="margin-top:14px">' +
+      (rs.repoSafe ? '<span class="tag ok"><i class="fas fa-check"></i> Accepted by the safety guard</span>' : '<span class="tag bad"><i class="fas fa-xmark"></i> Rejected by the safety guard</span>') +
+      (rs.repoSafe && !(sch.tables.pass && sch.columns.pass) ? '<span class="tag warn"><i class="fas fa-triangle-exclamation"></i> Schema check flags it (demo extra)</span>' : '') + '</div>';
+    h += '<div class="sub">Repo guard · <code>is_safe_query()</code></div><ul class="check">' +
+      rs.checks.map(function (c, i) { return li(c.pass ? 'pass' : 'fail', c.pass ? 'fa-circle-check' : 'fa-circle-xmark', (c.pass ? 'Pass: ' : 'Fail: ') + esc(c.label), c.detail).replace('<li ', '<li style="animation-delay:' + i * 60 + 'ms" '); }).join('') + '</ul>';
+    h += '<div class="sub">Schema allow-list · demo extra (heuristic)</div><ul class="check">' +
+      li(sch.tables.pass ? 'pass' : 'fail', sch.tables.pass ? 'fa-circle-check' : 'fa-circle-xmark', (sch.tables.pass ? 'Pass: ' : 'Fail: ') + 'Only known tables', sch.tables.detail, true) +
+      li(sch.columns.pass ? 'pass' : 'fail', sch.columns.pass ? 'fa-circle-check' : 'fa-circle-xmark', (sch.columns.pass ? 'Pass: ' : 'Fail: ') + 'Only known columns', sch.columns.detail, true) + '</ul>';
+  }
+  $('preview').innerHTML = h || '<div class="empty"><i class="fas fa-circle-question"></i>' + esc(r.note) + '</div>';
+
+  const req = r.kind === 'sql' ? { note: 'SQL pasted here, treated as the model output' } : { question: r.question };
+  $('json').innerHTML =
+    '<div class="sub" style="margin-top:0">' + (r.kind === 'sql' ? 'Simulated model output → guard' : 'Request') + ' · <code>POST /sql</code></div>' +
+    '<pre>' + esc(JSON.stringify(req, null, 2)) + '</pre>' +
+    '<div class="sub">Response · HTTP ' + r.status + (r.demoOnly ? ' (demo message)' : '') + '</div>' +
+    '<pre>' + esc(JSON.stringify(r.body, null, 2)) + '</pre>' +
+    '<p class="hint">Real status codes: 200 with <code>{"query": ...}</code>; 422 invalid body; 503 no provider key; 502 provider failure or rejected output.</p>';
+  renderRun();
+}
+
+function askQuestion() {
+  const raw = $('q').value, question = raw.trim();
+  if (!question) { $('q').focus(); return showResult({ kind: 'q', question: raw, status: 422, note: 'Type a question first (the API requires at least 1 character).', body: { detail: [{ loc: ['body', 'question'], msg: 'String should have at least 1 character', type: 'string_too_short' }] }, sql: null }); }
+  if (question.length > 2000) return showResult({ kind: 'q', question: question.slice(0, 40) + '…', status: 422, note: 'Questions are limited to 2,000 characters.', body: { detail: [{ loc: ['body', 'question'], msg: 'String should have at most 2000 characters', type: 'string_too_long' }] }, sql: null });
+  const sql = questionToSql(question);
+  if (!sql) {
+    lastSql = null;
+    return showResult({ kind: 'q', question, status: 200, demoOnly: true, sql: null, note: 'This offline demo has no language model, so it only understands a few phrasings (prices, categories, units sold, revenue, monthly units). Try one of the example chips. The real app would send this to an LLM.', body: { detail: 'Offline demo: no template matched this question.' } });
+  }
+  const safety = checkSafety(sql);
+  lastSql = sql;
+  showResult({ kind: 'q', question, status: safety.repoSafe ? 200 : 502, sql, safety, schema: checkSchema(sql), note: 'Generated by an offline template that stands in for the LLM.', body: safety.repoSafe ? { query: sql } : { detail: 'The model did not return a safe SELECT query.' } });
+}
+function checkSql() {
+  const sql = $('sqlIn').value;
+  if (!sql.trim()) { $('sqlIn').focus(); return showResult({ kind: 'sql', status: 502, sql: null, note: 'Paste or type some SQL first, or use one of the example chips.', body: { detail: 'The model did not return a safe SELECT query.' } }); }
+  const safety = checkSafety(sql);
+  lastSql = sql;
+  showResult({ kind: 'sql', status: safety.repoSafe ? 200 : 502, sql: sql.trim(), safety, schema: checkSchema(sql), note: 'Your SQL, checked as if a model had returned it.', body: safety.repoSafe ? { query: sql.trim() } : { detail: 'The model did not return a safe SELECT query.' } });
+}
+
+function renderRun() {
+  const on = $('runToggle').checked;
+  $('sampleCard').hidden = !on;
+  if (chart) { chart.destroy(); chart = null; }
+  if (!on) return;
+  const out = $('runOut');
+  if (!lastSql || !lastRender || !lastRender.safety) { out.innerHTML = '<div class="empty"><i class="fas fa-database"></i>Build a query or check some SQL first; it will be evaluated here against synthetic data.</div>'; return; }
+  if (!lastRender.safety.repoSafe) { out.innerHTML = '<div class="empty"><i class="fas fa-ban"></i>Not run: the safety guard rejected this SQL. (The real app never executes SQL at all.)</div>'; return; }
+  const r = runSample(lastSql);
+  if (!r.ok) { out.innerHTML = '<div class="empty"><i class="fas fa-circle-info"></i>' + esc(r.reason) + '</div>'; return; }
+  const fmt = function (v) { return typeof v === 'number' ? (Number.isInteger(v) ? v.toLocaleString() : v.toFixed(2)) : esc(v); };
+  let h = '';
+  if (r.columns.length === 1) h += '<div class="kpis" style="margin-bottom:14px"><div class="kpi"><small>' + esc(r.columns[0]) + '</small><b>' + fmt(r.rows[0][0]) + '</b></div></div>';
+  h += '<div class="tbl"><table><thead><tr>' + r.columns.map(function (c, i) { return '<th' + (i === r.valCol ? ' class="num"' : '') + '>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    (r.rows.length ? r.rows.map(function (row) { return '<tr>' + row.map(function (v, i) { return '<td' + (typeof v === 'number' ? ' class="num"' : '') + '>' + fmt(v) + '</td>'; }).join('') + '</tr>'; }).join('') : '<tr><td colspan="' + r.columns.length + '">0 rows (no products match, e.g. a category that is not in the sample data).</td></tr>') +
+    '</tbody></table></div>';
+  if (r.chart && r.rows.length) h += '<div class="chartbox"><canvas id="cv" role="img" aria-label="Chart of the sample-data result"></canvas></div>';
+  out.innerHTML = h;
+  if (r.chart && r.rows.length && typeof Chart !== 'undefined') {
+    Chart.defaults.color = '#8a99b5';
+    chart = new Chart($('cv'), {
+      type: r.chart,
+      data: { labels: r.rows.map(function (x) { return x[0]; }), datasets: [{ label: r.label, data: r.rows.map(function (x) { return x[r.valCol]; }), backgroundColor: 'rgba(45,212,191,.55)', borderColor: '#2dd4bf', borderWidth: 2, borderRadius: 6, tension: .3, fill: r.chart === 'line' }] },
+      options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { color: 'rgba(148,163,184,.1)' } }, y: { beginAtZero: true, grid: { color: 'rgba(148,163,184,.1)' } } } }
+    });
+  } else if (r.chart && r.rows.length) {
+    $('cv').outerHTML = '<p class="hint">Chart.js could not be loaded (offline?); the table above has the data.</p>';
+  }
+}
+
+$('askBtn').addEventListener('click', askQuestion);
+$('checkBtn').addEventListener('click', checkSql);
+$('q').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); askQuestion(); } });
+$('sqlIn').addEventListener('keydown', function (e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); checkSql(); } });
+$('runToggle').addEventListener('change', renderRun);
+
+$('sampleInfo').textContent = 'Synthetic data generated in the page: ' + PRODUCTS.length + ' products and ' + SALES.length + ' sales rows dated 2025-01-01 to 2025-06-30. These are invented for the demo and are not real retail figures.';
+$('sampleProducts').innerHTML = '<table><thead><tr><th>id</th><th>name</th><th>category</th><th class="num">price</th></tr></thead><tbody>' + PRODUCTS.map(function (p) { return '<tr><td>' + p.id + '</td><td>' + esc(p.name) + '</td><td>' + p.category + '</td><td class="num">' + p.price.toFixed(2) + '</td></tr>'; }).join('') + '</tbody></table>';
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<style>.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.num{text-align:right}</style>
+</body></html>

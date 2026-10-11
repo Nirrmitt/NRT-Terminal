@@ -231,6 +231,15 @@ section[id],footer[id]{scroll-margin-top:84px}
 .proj-card:hover .proj-gh{color:var(--cyan)}
 .proj-arrow{width:30px;height:30px;border-radius:8px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--cyan);transition:var(--tr)}
 .proj-card:hover .proj-arrow{background:var(--cyan);color:#070b1a;transform:rotate(-45deg)}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.live-badge i{width:7px;height:7px;border-radius:50%;background:#34d399;animation:livepulse 1.8s infinite}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.7)}70%{box-shadow:0 0 0 7px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+.proj-card.has-demo .proj-link-row{gap:10px}
+.demo-cta{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--indigo));color:#06101f;font-size:.82rem;font-weight:700;transition:var(--tr)}
+.proj-card.has-demo:hover .demo-cta{box-shadow:0 8px 22px rgba(56,189,248,.35);transform:translateY(-1px)}
+.code-link{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:10px;border:1px solid rgba(56,189,248,.2);color:var(--muted);font-size:.8rem;font-weight:600;transition:var(--tr)}
+.code-link:hover,.code-link:focus-visible{color:var(--cyan);border-color:var(--cyan);outline:none}
+@media(prefers-reduced-motion:reduce){.live-badge i{animation:none}}
 
 /* ── CERTIFICATES ── */
 .cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:24px;margin-top:52px}
@@ -976,6 +985,43 @@ if(reducedMotion){
 // ── Intersection Observer ──
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}})},{threshold:.12});
 document.querySelectorAll('.fu').forEach(el=>obs.observe(el));
+
+// ── Live demos: cards open the in-browser demo; GitHub stays one click away ──
+const liveDemos={
+  'Phylax-ops':'demos/phylax.html',
+  'niyam-regulatory-intelligence':'demos/niyam.html',
+  'Sense-your-data':'demos/retailiq.html',
+  'Automated-KPI-Extraction--Analytics-Dashboard':'demos/kpi.html',
+  'Automated-Retail-Platform':'demos/reporter.html',
+  'Retail-Analytics-Platform':'demos/retailplatform.html',
+  'AI-Resume-Analyzer-plus-EDA':'demos/resume.html'
+};
+document.querySelectorAll('a.proj-card').forEach(card=>{
+  const repo=card.href.split('github.com/Nirrmitt/')[1];
+  const demo=liveDemos[repo];
+  if(!demo)return;
+  const repoUrl='https://github.com/Nirrmitt/'+repo;
+  card.href=demo;
+  card.removeAttribute('target');
+  card.removeAttribute('rel');
+  card.classList.add('has-demo');
+  card.setAttribute('aria-label',(card.querySelector('.proj-title')?.textContent||'Project')+' - open live demo');
+  const badges=card.querySelector('.proj-badges');
+  if(badges)badges.insertAdjacentHTML('afterbegin','<span class="p-badge live-badge"><i></i>Live demo</span>');
+  const row=card.querySelector('.proj-link-row');
+  if(row)row.innerHTML='<span class="demo-cta"><i class="fas fa-play"></i>Try the live demo</span>'
+    +'<span class="code-link" role="link" tabindex="0" aria-label="View source on GitHub" data-gh="'+repoUrl+'"><i class="fab fa-github"></i>Code</span>';
+});
+const openRepo=el=>window.open(el.dataset.gh,'_blank','noopener');
+document.addEventListener('click',e=>{
+  const el=e.target.closest('.code-link');
+  if(!el)return;
+  e.preventDefault();e.stopPropagation();openRepo(el);
+});
+document.addEventListener('keydown',e=>{
+  const el=e.target.closest&&e.target.closest('.code-link');
+  if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();openRepo(el)}
+});
 
 // ── Project Filter ──
 document.querySelectorAll('.f-btn').forEach(btn=>{

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Niyam Regulatory Intelligence | Live Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+:root{--accent:#818cf8}
+.ny-main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;margin-top:26px;align-items:start}
+.ny-side{display:grid;gap:18px;min-width:0}
+@media(max-width:940px){.ny-main{grid-template-columns:1fr}}
+.askrow{display:flex;gap:10px}
+.askrow input{flex:1}
+.opts{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+.opts>div{flex:1;min-width:150px}
+.empty{border:1px dashed var(--border);border-radius:14px;padding:26px;text-align:center;color:var(--muted);font-size:.88rem}
+.empty i{display:block;font-size:1.6rem;color:var(--accent);margin-bottom:8px;opacity:.85}
+.hit{border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-top:12px;background:rgba(2,6,18,.5);animation:rise .4s ease both}
+.hit:hover{border-color:rgba(129,140,248,.45)}
+.hit-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.cite{font:600 .82rem 'DM Mono',monospace;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rank{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));color:#06101f;font:800 .75rem 'Syne',sans-serif}
+.hit p{font-size:.9rem;line-height:1.65}
+.scorerow{display:flex;align-items:center;gap:10px;margin:8px 0 10px;font:500 .76rem 'DM Mono',monospace;color:var(--muted)}
+.scorerow .bar{flex:1}
+.terms{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+mark{background:rgba(251,191,36,.25);color:#fde68a;border-radius:3px;padding:0 2px}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stats .kpi b{font-size:1.25rem}
+.doc{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.doc:last-child{border-bottom:0}
+.doc input{margin-top:4px;accent-color:var(--accent)}
+.doc .t{font-size:.88rem;font-weight:600;line-height:1.35}
+.doc .s{font-size:.76rem;color:var(--muted)}
+.doc .x{margin-left:auto;background:none;border:0;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:6px}
+.doc .x:hover{color:var(--red)}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tabs button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font:600 .82rem 'DM Sans',sans-serif;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--text);border-color:var(--accent);background:rgba(129,140,248,.12)}
+.drop{display:block;border:1.5px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;color:var(--muted);font-size:.86rem;transition:.2s}
+.drop:hover,.drop.on,.drop:focus-within{border-color:var(--accent);color:var(--text);background:rgba(129,140,248,.06)}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.drop i{display:block;font-size:1.4rem;color:var(--accent);margin-bottom:6px}
+.status{font-size:.82rem;margin-top:10px;min-height:1.2em}
+.status.err{color:var(--red)}.status.ok{color:var(--green)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.pill{font:500 .7rem 'DM Mono',monospace;color:var(--amber);border:1px solid rgba(251,191,36,.35);border-radius:99px;padding:1px 8px}
+.about ul{margin:8px 0 0 18px;color:var(--muted);font-size:.86rem}
+.about li{margin:4px 0}
+.mini{font-size:.78rem;color:var(--muted);margin-top:8px}
+</style></head>
+<body>
+<header class="d-top">
+  <a class="d-back" href="../index.html#projects"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+  <div class="d-links"><a class="d-btn" target="_blank" rel="noopener noreferrer" href="https://github.com/Nirrmitt/niyam-regulatory-intelligence"><i class="fab fa-github"></i> Source code</a></div>
+</header>
+<main class="d-wrap">
+  <section class="d-hero">
+    <div class="d-live"><i></i> Live demo · runs in your browser</div>
+    <h1>Niyam <span>regulatory intelligence</span></h1>
+    <p>Ask a plain-language question over regulatory documents and get the passages that answer it, each with a document name and page-level citation. Ranking is lexical, so you can see exactly which words matched and why a passage scored the way it did.</p>
+    <div class="d-note"><b>About this demo:</b> a lightweight in-browser version on sample data. The three built-in documents are original and fictional, written for this demo; they are not real regulations. Scroll to the bottom for what differs from the full repo.</div>
+  </section>
+
+  <div class="ny-main">
+    <section class="d-card" aria-labelledby="ask-h">
+      <h2 id="ask-h"><i class="fas fa-magnifying-glass" style="color:var(--accent)"></i> Ask a question</h2>
+      <form class="askrow" id="askForm" autocomplete="off">
+        <label class="sr" for="q">Your question</label>
+        <input type="text" id="q" maxlength="500" placeholder="e.g. How long must customer records be kept?">
+        <button class="d-btn primary" type="submit"><i class="fas fa-arrow-right"></i> Search</button>
+      </form>
+      <div class="d-chips" id="chips" aria-label="Example questions"></div>
+      <div class="opts">
+        <div><label class="d-l" for="mode">Ranking method</label>
+          <select id="mode">
+            <option value="bm25">BM25 (k1=1.5, b=0.75)</option>
+            <option value="tfidf">TF-IDF cosine</option>
+            <option value="raw">Raw term-count cosine (as in the repo)</option>
+          </select></div>
+        <div><label class="d-l" for="topk">Passages to return</label>
+          <select id="topk"><option>3</option><option selected>5</option><option>8</option></select></div>
+      </div>
+      <div id="results" aria-live="polite" style="margin-top:6px">
+        <div class="empty"><i class="fas fa-scale-balanced"></i>Ask something or tap an example.<br>Ranked passages with page citations will show up here.</div>
+      </div>
+    </section>
+
+    <div class="ny-side">
+      <section class="d-card" aria-labelledby="lib-h">
+        <h2 id="lib-h"><i class="fas fa-book" style="color:var(--accent)"></i> Document library <small>tick to include in search</small></h2>
+        <div id="docs"></div>
+        <div class="stats" style="margin-top:12px" id="stats" aria-label="Index statistics"></div>
+      </section>
+      <section class="d-card" aria-labelledby="add-h">
+        <h2 id="add-h"><i class="fas fa-file-circle-plus" style="color:var(--accent)"></i> Add your own</h2>
+        <div class="tabs" role="tablist" aria-label="Add a document">
+          <button role="tab" id="tabPdf" aria-selected="true" aria-controls="paneUpload" type="button">Upload PDF</button>
+          <button role="tab" id="tabText" aria-selected="false" aria-controls="panePaste" type="button">Paste text</button>
+        </div>
+        <div id="paneUpload" role="tabpanel" aria-labelledby="tabPdf">
+          <label class="drop" id="drop"><i class="fas fa-cloud-arrow-up"></i><span>Choose or drop a PDF</span>
+            <input type="file" id="file" accept="application/pdf,.pdf"></label>
+          <p class="mini">Text is extracted page by page with pdf.js in your browser. The file is never uploaded anywhere. Scanned PDFs without a text layer can't be read (no OCR here).</p>
+        </div>
+        <div id="panePaste" role="tabpanel" aria-labelledby="tabText" hidden>
+          <label class="d-l" for="pname">Document name</label>
+          <input type="text" id="pname" maxlength="80" placeholder="My policy notes">
+          <label class="d-l" for="ptext">Text <small style="text-transform:none;letter-spacing:0">(separate pages with a line containing <code>--- page ---</code>)</small></label>
+          <textarea id="ptext" placeholder="Paste text here…"></textarea>
+          <button class="d-btn" id="addText" type="button" style="margin-top:10px"><i class="fas fa-plus"></i> Add to library</button>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="d-card about" style="margin-top:18px">
+    <h2><i class="fas fa-circle-info" style="color:var(--accent)"></i> About this demo</h2>
+    <p style="color:var(--muted);font-size:.88rem">This is a lightweight in-browser version running on sample data (or whatever you upload or paste, which stays on your device). It mirrors the repo's pipeline shape: extract text per page, chunk by sentences, score chunks against the question, return page-cited passages.</p>
+    <ul>
+      <li><b>Same idea:</b> page-aware chunking on sentence boundaries, term-count cosine similarity over a simple word tokenizer (the "Raw term-count cosine" option follows the repo's keyword scorer), and results that carry document title and page number.</li>
+      <li><b>Added for the demo:</b> BM25 and TF-IDF ranking so you can compare lexical methods, plus stop-word removal and light stemming in those two modes. Chunks here are about 400 characters so short sample pages split into a few passages; the repo's default is larger.</li>
+      <li><b>Not in this page:</b> the full project also scores passages with sentence-transformer embeddings (BGE), blends them with keyword similarity, can re-rank with a cross-encoder, and generates grounded answers through an LLM behind a FastAPI service. None of that runs here: no embeddings, no LLM, no server, no API keys. Results are ranked passages only, not generated answers.</li>
+      <li>The scores are relative lexical scores on a tiny corpus. They are not relevance probabilities, and no accuracy figures are claimed.</li>
+    </ul>
+  </section>
+  <p class="d-foot">Built by Nirrmit R. Tickoo</p>
+</main>
+
+<script>
+/*LOGIC-START*/
+const SAMPLE_DOCS = [
+{ id:'dr', title:'Data Retention and Disposal Directive', code:'VFCB-DR/2024 (fictional)', pages:[
+`1. Purpose and scope. This Directive sets minimum standards for how regulated firms retain, protect and dispose of customer and transaction records. It applies to every licensed lender, payment institution and insurer operating in Veridia. Firms must maintain a written retention schedule approved by senior management and reviewed at least once every year. Records held in third-party or cloud systems remain the responsibility of the firm.`,
+`2. Retention periods. Customer identification records and account opening files must be retained for seven years after the business relationship ends. Transaction records must be retained for seven years from the date of the transaction. Complaint files must be kept for three years after the complaint is closed. Call recordings and electronic messages relating to advice must be kept for two years. Where a record falls into more than one category, the longest applicable period applies.`,
+`3. Legal holds and disposal. When a regulator, court or internal investigation requires preservation, the firm must place a legal hold on affected records. No record under legal hold may be deleted, even if its retention period has expired, until the hold is released in writing by the compliance officer. When the retention period ends and no hold applies, records must be disposed of within ninety days using secure deletion or certified destruction. A disposal log recording the record class, date and approver must be kept for five years.`,
+`4. Security and access. Retained records must be encrypted at rest and in transit. Access must be limited to staff with a documented business need and reviewed every quarter. Backups are subject to the same retention and disposal rules as primary systems. A firm that cannot retrieve a record within five business days of a regulator's request is in breach of this Directive.`
+]},
+{ id:'cdd', title:'Customer Due Diligence (KYC) Standard', code:'VFCB-CDD/2024 (fictional)', pages:[
+`1. Risk-based approach. Firms must verify the identity of every customer before opening an account or executing a transaction. The depth of checks must reflect the customer's risk rating, which considers geography, product type, delivery channel and ownership structure. Each customer must be assigned a low, medium or high risk rating, documented at onboarding.`,
+`2. Individuals. For individual customers, firms must collect full legal name, date of birth, residential address and a government-issued photo identification document. Address must be confirmed with a utility bill or bank statement issued within the last three months. Remote onboarding is permitted only where liveness detection is used to match the person to the identification photo.`,
+`3. Companies and beneficial owners. For corporate customers, firms must obtain the certificate of incorporation, registered address and a list of directors. The firm must identify every beneficial owner holding twenty-five percent or more of shares or voting rights and verify their identity as for individuals. Where no individual meets the threshold, senior managing officials must be identified. Complex ownership chains through trusts or nominee shareholders require documented explanation.`,
+`4. Enhanced due diligence and ongoing monitoring. High-risk customers, including politically exposed persons, require senior management approval, source-of-funds evidence and enhanced monitoring. Customer files must be refreshed every year for high risk, every three years for medium risk and every five years for low risk. Unusual transactions must be escalated to the compliance officer, who decides within ten business days whether to file a suspicious activity report. Firms must not tip off the customer that a report was made.`
+]},
+{ id:'ir', title:'Incident Reporting Rulebook', code:'VFCB-IR/2024 (fictional)', pages:[
+`1. Definitions. An incident is any event that compromises the confidentiality, integrity or availability of systems or data used to deliver regulated services. A major incident is one that affects more than one thousand customers, interrupts a critical service for over two hours, or involves unauthorised access to personal data.`,
+`2. Notification timelines. A firm must give the Board an initial notification of a major incident within four hours of classifying it, and no later than twenty-four hours after detection. An intermediate report must follow within seventy-two hours describing impact, root cause hypothesis and containment actions. A final report is due within thirty days of resolution. Incidents that are not major must be recorded in the incident register and summarised quarterly.`,
+`3. Customer and data breach communication. Where personal data has been accessed without authorisation, affected customers must be informed without undue delay and in any case within seventy-two hours of confirmation of the breach. The notice must describe the data involved, the likely consequences and the steps customers can take. The firm must not delay notice solely because the investigation is incomplete.`,
+`4. Third parties and post-incident review. Outsourced service providers must alert the firm within twelve hours of detecting an incident affecting its data. The firm remains accountable for reporting. After every major incident the firm must complete a post-incident review within sixty days, assign owners to remedial actions and share the review with the Board on request. Repeated failures to report on time may result in a financial penalty.`
+]}
+];
+
+const STOP = new Set("the and for with that this from are was were has have had not but you your can may will who what when where how does did its any all out one two per into onto than then them they their there which while about after before once over under only also should would could been being such must shall any".split(' '));
+function stem(w) {
+  if (w.length > 4) w = w.replace(/(ing|ed|es|s)$/, '');
+  if (w.length > 4) w = w.replace(/e$/, '');
+  return w.replace(/([^aeiou])\1$/, '$1');
+}
+// 'raw' mirrors the repo's tokenizer (regex only); the others also drop stop words and stem.
+function termOf(word, mode) {
+  const w = word.toLowerCase();
+  if (mode === 'raw') return w;
+  return STOP.has(w) ? null : stem(w);
+}
+function tokenize(text, mode) {
+  const out = [];
+  for (const m of text.match(/\b[a-zA-Z][a-zA-Z0-9-]{2,}\b/g) || []) { const t = termOf(m, mode); if (t) out.push(t); }
+  return out;
+}
+const tf = toks => { const m = new Map(); toks.forEach(t => m.set(t, (m.get(t) || 0) + 1)); return m; };
+
+// Sentence chunker, same approach as the repo's _chunk_text but with a smaller size for short pages.
+function chunkText(text, chunkChars = 400) {
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (!normalized) return [];
+  const sentences = normalized.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+  const chunks = []; let cur = [], len = 0;
+  for (const s of sentences) {
+    if (cur.length && len + s.length > chunkChars) {
+      chunks.push(cur.join(' '));
+      cur = cur.slice(-Math.max(1, Math.floor(cur.length / 3)));
+      len = cur.reduce((a, p) => a + p.length, 0);
+    }
+    cur.push(s); len += s.length;
+  }
+  if (cur.length) chunks.push(cur.join(' '));
+  return chunks;
+}
+function buildChunks(doc) {
+  const out = [];
+  doc.pages.forEach((pt, pi) => chunkText(pt).forEach((c, ci) => out.push({docId:doc.id, title:doc.title, page:pi + 1, n:ci + 1, text:c})));
+  return out;
+}
+
+function rank(chunks, question, mode, k) {
+  const qTerms = tokenize(question, mode);
+  const qtf = tf(qTerms);
+  if (!qtf.size || !chunks.length) return {hits:[], queryTerms:[...qtf.keys()]};
+  const N = chunks.length;
+  const docs = chunks.map(c => { const t = tokenize(c.text, mode); return {c, t, f:tf(t), len:t.length}; });
+  const df = new Map();
+  docs.forEach(d => d.f.forEach((_, term) => df.set(term, (df.get(term) || 0) + 1)));
+  const avgdl = docs.reduce((a, d) => a + d.len, 0) / N || 1;
+  const idfBm = t => Math.log(1 + (N - (df.get(t) || 0) + 0.5) / ((df.get(t) || 0) + 0.5));
+  const idfTf = t => Math.log((N + 1) / ((df.get(t) || 0) + 1)) + 1;
+  const norm = m => Math.sqrt([...m.values()].reduce((a, v) => a + v * v, 0));
+  const scored = docs.map(d => {
+    let score = 0;
+    const matched = [...qtf.keys()].filter(t => d.f.has(t));
+    if (mode === 'bm25') {
+      for (const t of matched) { const f = d.f.get(t); score += idfBm(t) * (f * 2.5) / (f + 1.5 * (0.25 + 0.75 * d.len / avgdl)); }
+    } else if (mode === 'tfidf') {
+      const qv = new Map([...qtf].map(([t, f]) => [t, (1 + Math.log(f)) * idfTf(t)]));
+      const dv = new Map([...d.f].map(([t, f]) => [t, (1 + Math.log(f)) * idfTf(t)]));
+      let dot = 0; for (const [t, w] of qv) if (dv.has(t)) dot += w * dv.get(t);
+      score = dot ? dot / (norm(qv) * norm(dv)) : 0;
+    } else {
+      let dot = 0; for (const [t, f] of qtf) dot += f * (d.f.get(t) || 0);
+      score = dot ? dot / (norm(qtf) * norm(d.f)) : 0;
+    }
+    return {...d.c, score, matched};
+  }).filter(h => h.score > 0).sort((a, b) => b.score - a.score || a.page - b.page);
+  return {hits:scored.slice(0, k), queryTerms:[...qtf.keys()], totalMatches:scored.length};
+}
+
+// Split pasted text into pages on a "--- page ---" line or form feed.
+function splitPages(text) {
+  const pages = text.split(/\f|^\s*-{3,}\s*page\s*-{3,}\s*$/gim).map(p => p.trim()).filter(Boolean);
+  return pages.length ? pages : [];
+}
+/*LOGIC-END*/
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const library = SAMPLE_DOCS.map(d => ({...d, enabled:true, sample:true}));
+const CHIPS = [
+  'How long must customer records be kept?',
+  'Can I delete data that is under a legal hold?',
+  'Who counts as a beneficial owner of a company?',
+  'When must a major incident be reported to the Board?',
+  'How quickly must customers be told about a data breach?',
+  'How often must high-risk customer files be refreshed?'
+];
+let docSeq = 0;
+
+function activeChunks() { return library.filter(d => d.enabled).flatMap(buildChunks); }
+function renderLibrary() {
+  $('docs').innerHTML = library.length ? library.map(d => '<div class="doc"><input type="checkbox" id="d_' + esc(d.id) + '" data-id="' + esc(d.id) + '"' + (d.enabled ? ' checked' : '') + '><label for="d_' + esc(d.id) + '"><div class="t">' + esc(d.title) + '</div><div class="s">' + (d.sample ? esc(d.code) : 'your document') + ' · ' + d.pages.length + ' page' + (d.pages.length === 1 ? '' : 's') + '</div></label>' + (d.sample ? '' : '<button class="x" type="button" data-rm="' + esc(d.id) + '" aria-label="Remove ' + esc(d.title) + '"><i class="fas fa-trash"></i></button>') + '</div>').join('')
+    : '<div class="empty">No documents. Add one below.</div>';
+  const ch = activeChunks();
+  const vocab = new Set(ch.flatMap(c => tokenize(c.text, 'bm25')));
+  const on = library.filter(d => d.enabled);
+  $('stats').innerHTML = [['Documents', on.length], ['Pages', on.reduce((a, d) => a + d.pages.length, 0)], ['Passages', ch.length], ['Vocabulary', vocab.size]]
+    .map(([k, v]) => '<div class="kpi"><small>' + k + '</small><b>' + v + '</b></div>').join('');
+}
+function highlight(text, mode, qset) {
+  return esc(text).replace(/\b[A-Za-z][A-Za-z0-9-]{2,}\b/g, w => { const t = termOf(w, mode); return t && qset.has(t) ? '<mark>' + w + '</mark>' : w; });
+}
+function search(question) {
+  question = question.trim();
+  if (!question) return;
+  const mode = $('mode').value, k = Number($('topk').value);
+  const chunks = activeChunks();
+  const out = $('results');
+  if (!chunks.length) { out.innerHTML = '<div class="empty"><i class="fas fa-folder-open"></i>No documents are selected. Tick at least one in the library.</div>'; return; }
+  const {hits, queryTerms, totalMatches} = rank(chunks, question, mode, k);
+  if (!hits.length) {
+    out.innerHTML = '<div class="empty"><i class="fas fa-circle-question"></i>No passage shares a searchable term with that question.<br>' + (queryTerms.length ? 'Terms used: ' + queryTerms.map(t => '<code>' + esc(t) + '</code>').join(' ') : 'Try longer words; very short or common words are ignored.') + '</div>';
+    return;
+  }
+  const qset = new Set(queryTerms), top = hits[0].score;
+  out.innerHTML = '<p class="mini" style="margin:12px 0 0">' + (totalMatches > hits.length ? 'Top ' + hits.length + ' of ' + totalMatches + ' matching passages' : hits.length + ' matching passage' + (hits.length === 1 ? '' : 's')) + ' · query terms: ' + queryTerms.map(t => '<code>' + esc(t) + '</code>').join(' ') + '</p>' +
+    hits.map((h, i) => '<article class="hit" style="animation-delay:' + i * 70 + 'ms"><div class="hit-h"><div class="cite"><span class="rank" aria-hidden="true">' + (i + 1) + '</span><span>' + esc(h.title) + ' · p.' + h.page + '</span></div><button class="d-btn copy" type="button" data-cite="' + esc(h.title + ', p.' + h.page) + '"><i class="fas fa-quote-left"></i> Copy citation</button></div>' +
+      '<div class="scorerow"><span>score ' + h.score.toFixed(3) + '</span><div class="bar" role="img" aria-label="' + Math.round(h.score / top * 100) + ' percent of the top score"><i data-w="' + (h.score / top * 100).toFixed(1) + '" style="width:0"></i></div><span>' + Math.round(h.score / top * 100) + '%</span></div>' +
+      '<p>' + highlight(h.text, mode, qset) + '</p><div class="terms">' + h.matched.map(t => '<span class="tag info">' + esc(t) + '</span>').join('') + '</div></article>').join('');
+  requestAnimationFrame(() => requestAnimationFrame(() => out.querySelectorAll('.bar i').forEach(i => { i.style.width = i.dataset.w + '%'; })));
+}
+
+function setStatus(msg, cls) { $('status').className = 'status ' + (cls || ''); $('status').textContent = msg; }
+function addDoc(title, pages) {
+  const id = 'u' + (++docSeq);
+  library.push({id, title, pages, enabled:true});
+  renderLibrary();
+  if ($('q').value.trim()) search($('q').value);
+}
+function loadScript(src) {
+  return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Could not load pdf.js (are you offline?)')); document.head.appendChild(s); });
+}
+async function readPdf(file) {
+  if (file.size > 25 * 1024 * 1024) throw new Error('That PDF is over 25 MB. Try a smaller one.');
+  if (!window.pdfjsLib) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const pdf = await pdfjsLib.getDocument({data: await file.arrayBuffer()}).promise;
+  const pages = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    setStatus('Extracting page ' + p + ' of ' + pdf.numPages + '…');
+    const content = await (await pdf.getPage(p)).getTextContent();
+    pages.push(content.items.map(it => it.str + (it.hasEOL ? '\n' : ' ')).join('').trim());
+  }
+  return pages;
+}
+async function handleFile(file) {
+  if (!file) return;
+  if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') { setStatus('Please choose a PDF file.', 'err'); return; }
+  try {
+    setStatus('Reading ' + file.name + '…');
+    const pages = await readPdf(file);
+    if (!pages.some(p => p.length > 20)) throw new Error('No text layer found. This looks like a scanned PDF, and this demo has no OCR.');
+    addDoc(file.name.replace(/\.pdf$/i, ''), pages.map(p => p || '(blank page)'));
+    setStatus('Added "' + file.name + '" (' + pages.length + ' pages). Ask a question about it.', 'ok');
+  } catch (e) { setStatus(e.message || 'Could not read that PDF.', 'err'); }
+  $('file').value = '';
+}
+
+CHIPS.forEach(t => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip'; b.textContent = t;
+  b.addEventListener('click', () => { $('q').value = t; search(t); });
+  $('chips').appendChild(b);
+});
+$('askForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value); });
+['mode', 'topk'].forEach(id => $(id).addEventListener('change', () => { if ($('q').value.trim()) search($('q').value); }));
+$('docs').addEventListener('change', e => {
+  const d = library.find(x => x.id === e.target.dataset.id);
+  if (d) { d.enabled = e.target.checked; renderLibrary(); if ($('q').value.trim()) search($('q').value); }
+});
+$('docs').addEventListener('click', e => {
+  const b = e.target.closest('[data-rm]'); if (!b) return;
+  library.splice(library.findIndex(x => x.id === b.dataset.rm), 1); renderLibrary();
+  if ($('q').value.trim()) search($('q').value);
+});
+$('results').addEventListener('click', async e => {
+  const b = e.target.closest('.copy'); if (!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.cite); b.innerHTML = '<i class="fas fa-check"></i> Copied'; }
+  catch { b.textContent = b.dataset.cite; }
+  setTimeout(() => { b.innerHTML = '<i class="fas fa-quote-left"></i> Copy citation'; }, 1600);
+});
+$('file').addEventListener('change', e => handleFile(e.target.files[0]));
+const drop = $('drop');
+['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('on'); }));
+['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('on'); }));
+drop.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
+$('addText').addEventListener('click', () => {
+  const pages = splitPages($('ptext').value);
+  if (!pages.length) { setStatus('Paste some text first.', 'err'); return; }
+  const name = $('pname').value.trim() || 'Pasted text ' + (docSeq + 1);
+  addDoc(name, pages); setStatus('Added "' + name + '" (' + pages.length + ' page' + (pages.length === 1 ? '' : 's') + ').', 'ok');
+  $('ptext').value = '';
+});
+function selectTab(pdf) {
+  $('tabPdf').setAttribute('aria-selected', pdf); $('tabText').setAttribute('aria-selected', !pdf);
+  $('paneUpload').hidden = !pdf; $('panePaste').hidden = pdf;
+}
+$('tabPdf').addEventListener('click', () => selectTab(true));
+$('tabText').addEventListener('click', () => selectTab(false));
+renderLibrary();
+</script>
+</body></html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Automated KPI Extraction | Live Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="demo.css">
+<style>
+:root{--accent:#a78bfa}
+button{font-family:inherit}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row .grow{flex:1;min-width:180px}
+.hint{color:var(--muted);font-size:.8rem;margin-top:8px}
+kbd{font:500 .72rem 'DM Mono',monospace;border:1px solid var(--border);border-radius:5px;padding:1px 6px;background:rgba(2,6,18,.6)}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:26px;counter-reset:s}
+.steps li{display:flex;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--panel);color:var(--muted);font-size:.88rem;transition:.3s}
+.steps li::before{counter-increment:s;content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 .85rem 'Syne';border:1px solid var(--border)}
+.steps li b{display:block;color:var(--text);font-size:.92rem}
+.steps li.done{border-color:rgba(52,211,153,.4);color:#a7f3d0}.steps li.done::before{content:"\2713";background:var(--green);color:#06101f;border-color:transparent}
+.steps li.fail{border-color:rgba(251,113,133,.45)}.steps li.fail::before{content:"!";background:var(--red);color:#06101f;border-color:transparent}
+.steps li.active{border-color:var(--accent);color:var(--text)}
+.steps li.active::before{background:var(--accent);color:#06101f;border-color:transparent}
+.hl{white-space:pre-wrap;line-height:1.9}
+mark{color:inherit;border-radius:5px;padding:2px 4px;border-bottom:2px solid;animation:pop .4s ease both}
+mark[data-f=date]{background:rgba(56,189,248,.18);border-color:#38bdf8}
+mark[data-f=revenue]{background:rgba(52,211,153,.18);border-color:#34d399}
+mark[data-f=churn]{background:rgba(251,191,36,.18);border-color:#fbbf24}
+mark[data-f=nps]{background:rgba(167,139,250,.22);border-color:#a78bfa}
+@keyframes pop{from{opacity:0;background-size:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--muted);margin:10px 0}
+.legend mark{animation:none;font-size:.76rem}
+.check{list-style:none;display:grid;gap:8px}
+.check li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(2,6,18,.45);font-size:.88rem;animation:rise .35s ease both}
+.check li i{margin-top:3px;width:16px;text-align:center}
+.check li.pass i{color:var(--green)}.check li.fail{border-color:rgba(251,113,133,.4)}.check li.fail i{color:var(--red)}.check li.warn i{color:var(--amber)}.check li.warn{border-color:rgba(251,191,36,.35)}
+.check li small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+.empty{color:var(--muted);border:1px dashed var(--border);border-radius:14px;padding:26px;text-align:center;font-size:.9rem}
+.empty i{display:block;font-size:1.4rem;margin-bottom:8px;color:var(--accent);opacity:.85}
+.switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:.85rem;font-weight:600}
+.switch input{position:absolute;opacity:0}
+.switch .tr{width:40px;height:22px;border-radius:99px;background:rgba(148,163,184,.25);position:relative;transition:.2s;flex:none}
+.switch .tr::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#e2e8f0;transition:.2s}
+.switch input:checked+.tr{background:var(--accent)}
+.switch input:checked+.tr::after{transform:translateX(18px);background:#06101f}
+.switch input:focus-visible+.tr{outline:2px solid var(--accent);outline-offset:3px}
+.chip:focus-visible,.d-btn:focus-visible,.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.seg button{background:transparent;border:0;color:var(--muted);padding:8px 14px;font-size:.84rem;font-weight:600;cursor:pointer;transition:.2s}
+.seg button[aria-pressed=true]{background:var(--accent);color:#06101f}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end;margin-bottom:16px}
+.filters label.d-l{margin-top:0}
+.chartbox{position:relative;height:300px;margin-top:16px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.d-card{animation:rise .4s ease both}
+.log{display:grid;gap:6px;margin-top:12px;font-size:.84rem}
+.log div{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(2,6,18,.45)}
+.delta.up{color:var(--green)}.delta.down{color:var(--red)}
+.kpi .delta{display:block;font:500 .76rem 'DM Sans';margin-top:2px;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style></head>
+<body>
+<header class="d-top">
+  <a class="d-back" href="../index.html#projects"><i class="fas fa-arrow-left"></i> Back to portfolio</a>
+  <div class="d-links"><a class="d-btn" target="_blank" rel="noopener noreferrer" href="https://github.com/Nirrmitt/Automated-KPI-Extraction--Analytics-Dashboard"><i class="fab fa-github"></i> Source code</a></div>
+</header>
+<main class="d-wrap">
+  <section class="d-hero">
+    <div class="d-live"><i></i> Live demo · runs in your browser</div>
+    <h1>Automated KPI Extraction <span>from unstructured reports</span></h1>
+    <p>Paste or edit a report, run the rule-based extractor, watch the schema validation accept or reject it, then explore the structured metrics in a dashboard built from everything you have extracted so far.</p>
+    <div class="d-note"><b>About this demo:</b> a lightweight in-browser port of the repo's extraction and validation stage. The regex patterns and the date / churn 0–100 / NPS 0–100 checks follow <code>src/extraction.py</code>, including the repo's defaults of 0 when a metric is not found (turn on strict mode to reject instead). Everything runs in JavaScript on <u>fictional sample reports</u> or text you type; nothing is uploaded. Differences from the full repo: no PDF/TXT ingestion from <code>data/raw</code> (pdfplumber), no Pydantic, no SQLite storage (records live in this page until you reload), and the dashboard here is Chart.js rather than Streamlit + Plotly. The repo keeps its upserts keyed on <code>source_file + report_date</code>; this demo does the same. Only the patterns shown are supported, so other wordings simply will not match.</div>
+  </section>
+
+  <ol class="steps" id="steps" aria-label="Pipeline steps">
+    <li id="st1" class="active"><div><b>Extract</b>Regex over the report text</div></li>
+    <li id="st2"><div><b>Validate</b>Type and range checks</div></li>
+    <li id="st3"><div><b>Structure &rarr; CSV &rarr; Dashboard</b>Accepted records only</div></li>
+  </ol>
+
+  <div class="d-grid two">
+    <section class="d-card" aria-labelledby="h1">
+      <h2 id="h1"><i class="fas fa-file-lines" style="color:var(--accent)"></i> 1 · Report text &amp; regex matches</h2>
+      <div class="d-chips" id="chips" role="group" aria-label="Load a fictional sample report"></div>
+      <label class="d-l" for="fname">Source file name</label>
+      <input type="text" id="fname" value="sample_report.txt" maxlength="80" autocomplete="off">
+      <label class="d-l" for="txt">Report text <span style="text-transform:none;letter-spacing:0;font-weight:400">(editable)</span></label>
+      <textarea id="txt" spellcheck="false" placeholder="Paste a report here, or pick a sample above…"></textarea>
+      <div class="row" style="margin-top:12px">
+        <button class="d-btn primary" id="go" type="button"><i class="fas fa-play"></i> Extract</button>
+        <button class="d-btn" id="goAll" type="button"><i class="fas fa-layer-group"></i> Extract all 5 samples</button>
+        <label class="switch"><input type="checkbox" id="strict" checked><span class="tr" aria-hidden="true"></span><span>Strict mode <small style="color:var(--muted);font-weight:500">(demo extra: reject missing fields)</small></span></label>
+      </div>
+      <p class="hint"><kbd>Enter</kbd> in the file name or <kbd>Ctrl</kbd>+<kbd>Enter</kbd> in the text runs Extract.</p>
+      <div id="out1" aria-live="polite" style="margin-top:14px"><div class="empty"><i class="fas fa-highlighter"></i>Regex matches will be highlighted here after you press Extract.</div></div>
+    </section>
+    <section class="d-card" aria-labelledby="h2">
+      <h2 id="h2"><i class="fas fa-shield-halved" style="color:var(--accent)"></i> 2 · Schema validation</h2>
+      <div id="out2" aria-live="polite"><div class="empty"><i class="fas fa-list-check"></i>Validation results (and any rejected record) show up here.</div></div>
+    </section>
+  </div>
+
+  <section class="d-card" style="margin-top:18px" aria-labelledby="h3">
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <h2 id="h3" style="margin:0"><i class="fas fa-table" style="color:var(--accent)"></i> 3 · Structured metrics <small id="cnt"></small></h2>
+      <div class="row"><button class="d-btn" id="csv" type="button" disabled><i class="fas fa-download"></i> Download CSV</button><button class="d-btn" id="clear" type="button" disabled><i class="fas fa-rotate-left"></i> Clear</button></div>
+    </div>
+    <div id="out3"><div class="empty"><i class="fas fa-database"></i>No metrics yet. Extract a report to build the table.</div></div>
+    <div id="log" class="log" aria-live="polite"></div>
+  </section>
+
+  <section class="d-card" style="margin-top:18px" aria-labelledby="h4">
+    <h2 id="h4"><i class="fas fa-chart-line" style="color:var(--accent)"></i> Dashboard <small>built only from the records extracted in this session</small></h2>
+    <div id="dash"><div class="empty"><i class="fas fa-chart-column"></i>The dashboard appears once at least one record has been extracted and accepted.</div></div>
+  </section>
+
+  <p class="d-foot">Built by Nirrmit R. Tickoo</p>
+</main>
+
+<script id="core">
+/* ---------- Pure logic (ported from src/extraction.py) ---------- */
+const REV_PATTERNS = [
+  { src: '[\\$]?([\\d,]+\\.?\\d*)\\s*USD', re: /[\$]?([\d,]+\.?\d*)\s*USD/i },
+  { src: 'Revenue[:\\s]*[\\$]?([\\d,]+\\.?\\d*)', re: /Revenue[:\s]*[\$]?([\d,]+\.?\d*)/i },
+  { src: '([\\d.]+)M\\s*USD', re: /([\d.]+)M\s*USD/i }
+];
+const DATE_RE = /(\d{4}-\d{2}-\d{2})/;
+const CHURN_RE = /Churn\s*(?:Rate)?[:\s]+([\d.]+)%/i;
+const NPS_RE = /NPS[:\s]+(\d+)/i;
+
+function cleanText(t) { return String(t).split(/\s+/).filter(Boolean).join(' '); }
+function pyFloat(s) { return /^(\d+\.?\d*|\.\d+)$/.test(s) ? parseFloat(s) : null; }
+function validDate(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (!m) return false;
+  const y = +m[1], mo = +m[2], d = +m[3];
+  if (y < 1 || mo < 1 || mo > 12 || d < 1) return false;
+  const dt = new Date(Date.UTC(2000, mo - 1, d));
+  dt.setUTCFullYear(y);
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === mo - 1 && dt.getUTCDate() === d;
+}
+function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+function extractKpis(text, source) {
+  const clean = cleanText(text);
+  const matches = [], defaulted = [], typeErrors = [];
+  const rec = { report_date: null, revenue_usd: null, churn_rate_pct: null, nps_score: null, source_file: source };
+  let m = DATE_RE.exec(clean);
+  if (m) { rec.report_date = m[1]; matches.push({ f: 'date', field: 'report_date', start: m.index, end: m.index + m[0].length, raw: m[1], pattern: DATE_RE.source }); }
+  else { rec.report_date = todayStr(); defaulted.push({ field: 'report_date', value: rec.report_date + ' (today)' }); }
+
+  let revFound = false;
+  for (let i = 0; i < REV_PATTERNS.length; i++) {
+    m = REV_PATTERNS[i].re.exec(clean);
+    if (!m) continue;
+    revFound = true;
+    matches.push({ f: 'revenue', field: 'revenue_usd', start: m.index, end: m.index + m[0].length, raw: m[1], pattern: REV_PATTERNS[i].src, note: i === 2 ? 'x 1,000,000 (M shorthand)' : '' });
+    const n = pyFloat(m[1].replace(/,/g, ''));
+    if (n === null) typeErrors.push({ field: 'revenue_usd', msg: 'could not convert string to float: \'' + m[1].replace(/,/g, '') + '\'' });
+    else rec.revenue_usd = i === 2 ? n * 1000000 : n;
+    break;
+  }
+  if (!revFound) { rec.revenue_usd = 0; defaulted.push({ field: 'revenue_usd', value: '0.0' }); }
+
+  m = CHURN_RE.exec(clean);
+  if (m) {
+    matches.push({ f: 'churn', field: 'churn_rate_pct', start: m.index, end: m.index + m[0].length, raw: m[1], pattern: CHURN_RE.source });
+    const n = pyFloat(m[1]);
+    if (n === null) typeErrors.push({ field: 'churn_rate_pct', msg: 'could not convert string to float: \'' + m[1] + '\'' }); else rec.churn_rate_pct = n;
+  } else { rec.churn_rate_pct = 0; defaulted.push({ field: 'churn_rate_pct', value: '0.0' }); }
+
+  m = NPS_RE.exec(clean);
+  if (m) { matches.push({ f: 'nps', field: 'nps_score', start: m.index, end: m.index + m[0].length, raw: m[1], pattern: NPS_RE.source }); rec.nps_score = parseInt(m[1], 10); }
+  else { rec.nps_score = 0; defaulted.push({ field: 'nps_score', value: '0' }); }
+  return { clean, matches, defaulted, typeErrors, rec };
+}
+
+/* Mirrors the KPIRecord validators; strict adds a demo-only "field must be found" rule. */
+function validateRecord(ex, strict) {
+  const r = ex.rec, checks = [];
+  const add = function (field, rule, pass, detail, level) { checks.push({ field, rule, pass, detail, level: level || (pass ? 'pass' : 'fail') }); };
+  const te = function (f) { return ex.typeErrors.find(function (e) { return e.field === f; }); };
+  add('source_file', 'Non-empty string', typeof r.source_file === 'string' && r.source_file.trim().length > 0, r.source_file ? r.source_file : 'File name is empty.');
+  const okDate = r.report_date != null && validDate(r.report_date);
+  add('report_date', 'Valid YYYY-MM-DD calendar date', okDate, okDate ? r.report_date : 'Date must be YYYY-MM-DD, got: ' + r.report_date);
+  const tr = te('revenue_usd');
+  add('revenue_usd', 'Parses as a float', !tr && typeof r.revenue_usd === 'number' && isFinite(r.revenue_usd), tr ? tr.msg : fmtUsd(r.revenue_usd));
+  const tc = te('churn_rate_pct');
+  if (tc || r.churn_rate_pct == null) add('churn_rate_pct', 'Parses as a float', false, tc ? tc.msg : 'missing');
+  else { const ok = r.churn_rate_pct >= 0 && r.churn_rate_pct <= 100; add('churn_rate_pct', 'Within 0–100', ok, ok ? r.churn_rate_pct + '%' : 'Churn must be 0-100, got: ' + r.churn_rate_pct); }
+  const okN = Number.isInteger(r.nps_score) && r.nps_score >= 0 && r.nps_score <= 100;
+  add('nps_score', 'Integer within 0–100', okN, okN ? String(r.nps_score) : 'NPS must be 0-100, got: ' + r.nps_score);
+  ex.defaulted.forEach(function (d) {
+    if (strict) add(d.field, 'Found in the text (strict mode, demo extra)', false, 'Not found. The repo would silently default to ' + d.value + '.');
+    else add(d.field, 'Found in the text', true, 'Not found: defaulted to ' + d.value + ' (repo behaviour).', 'warn');
+  });
+  if (typeof r.revenue_usd === 'number' && r.revenue_usd > 0 && r.revenue_usd < 1000)
+    add('revenue_usd', 'Plausible magnitude (demo hint)', true, 'Only ' + r.revenue_usd + '. If the report says e.g. "1.2M", the repo\'s "Revenue:" pattern does not apply the M multiplier.', 'warn');
+  return { checks, ok: checks.every(function (c) { return c.level !== 'fail'; }) };
+}
+
+function fmtUsd(v) { return typeof v === 'number' ? '$' + v.toLocaleString('en-US', { maximumFractionDigits: 2 }) : String(v); }
+function pyFloatStr(n) { return Number.isInteger(n) ? n.toFixed(1) : String(n); }
+function csvCell(v) { const s = String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+function toCsv(records) {
+  const head = ['source_file', 'report_date', 'revenue_usd', 'churn_rate_pct', 'nps_score', 'ingested_at'];
+  const rows = records.map(function (r) { return [r.source_file, r.report_date, pyFloatStr(r.revenue_usd), pyFloatStr(r.churn_rate_pct), r.nps_score, r.ingested_at].map(csvCell).join(','); });
+  return [head.join(',')].concat(rows).join('\n') + '\n';
+}
+function upsert(store, rec) {
+  const id = rec.source_file + '_' + rec.report_date;
+  const had = store.has(id);
+  store.set(id, Object.assign({}, rec, { ingested_at: new Date().toISOString() }));
+  return had ? 'updated' : 'inserted';
+}
+function dashData(records, f) {
+  const rows = records.filter(function (r) {
+    return (!f.from || r.report_date >= f.from) && (!f.to || r.report_date <= f.to) && (!f.source || r.source_file === f.source);
+  }).sort(function (a, b) { return a.report_date < b.report_date ? -1 : a.report_date > b.report_date ? 1 : 0; });
+  const n = rows.length, sum = function (k) { return rows.reduce(function (a, r) { return a + r[k]; }, 0); };
+  const last = rows[n - 1], prev = rows[n - 2];
+  return { rows, n, totalRevenue: sum('revenue_usd'), avgChurn: n ? sum('churn_rate_pct') / n : null, avgNps: n ? sum('nps_score') / n : null,
+    latest: last || null, revDelta: last && prev && prev.revenue_usd ? (last.revenue_usd - prev.revenue_usd) / prev.revenue_usd * 100 : null };
+}
+
+const SAMPLES = [
+  { name: 'ops_report_2024-07.txt', text: 'NORTHWIND PARTNERS (fictional)\nMonthly Operations Summary\nReport Date: 2024-07-31\n\nRevenue: $1,102,500\nCustomer Churn Rate: 4.8%\nNPS: 41\n\nNotes: onboarding backlog cleared in week 3.' },
+  { name: 'ops_report_2024-08.txt', text: 'NORTHWIND PARTNERS (fictional)\nMonthly Operations Summary - period ending 2024-08-31\n\nThe business closed the month at 1186200 USD in billed revenue.\nChurn: 4.5% of accounts, helped by the new success playbook.\nNPS: 44 (up from last month).' },
+  { name: 'ops_report_2024-09.txt', text: 'NORTHWIND PARTNERS (fictional)\nQ3 wrap-up. Date: 2024-09-30\n\nRevenue for the period reached 1.3M USD, driven by two enterprise renewals.\nChurn Rate: 4.2%\nNPS: 47' },
+  { name: 'ops_report_2024-10_draft.txt', text: 'NORTHWIND PARTNERS (fictional)\nDRAFT - figures not reviewed\nReport Date: 2024-10-31\n\nRevenue: $1,241,000\nChurn Rate: 140%   <- typo in the draft\nNPS: 46' },
+  { name: 'ops_report_2024-11.txt', text: 'NORTHWIND PARTNERS (fictional)\nMonthly Operations Summary\nReport Date: 2024-11-30\n\nRevenue: $1,318,750\nChurn: 3.9%\nNPS: 49\n\nHighlights: expansion revenue up, support tickets down.' }
+];
+</script>
+
+<script id="ui">
+/* ---------- UI ---------- */
+const $ = function (id) { return document.getElementById(id); };
+const esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+const store = new Map();
+const metrics = { revenue_usd: { label: 'Revenue (USD)', color: '#34d399' }, churn_rate_pct: { label: 'Churn rate (%)', color: '#fbbf24' }, nps_score: { label: 'NPS', color: '#a78bfa' } };
+const dashState = { metric: 'revenue_usd', from: '', to: '', source: '' };
+let chart = null;
+
+SAMPLES.forEach(function (s, i) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip'; b.textContent = s.name.replace('ops_report_', '').replace('.txt', '') + (i === 3 ? ' (bad churn)' : i === 2 ? ' (1.3M format)' : '');
+  b.addEventListener('click', function () { $('fname').value = s.name; $('txt').value = s.text; run(); });
+  $('chips').appendChild(b);
+});
+
+function setSteps(a, b, c) { ['st1', 'st2', 'st3'].forEach(function (id, i) { $(id).className = [a, b, c][i] || ''; }); }
+
+function process(text, name) {
+  const ex = extractKpis(text, name.trim());
+  const val = validateRecord(ex, $('strict').checked);
+  let status = null;
+  if (val.ok) status = upsert(store, ex.rec);
+  return { ex, val, status };
+}
+
+function renderMatches(ex) {
+  const sorted = ex.matches.slice().sort(function (a, b) { return a.start - b.start; });
+  let pos = 0, h = '';
+  sorted.forEach(function (m) {
+    if (m.start < pos) return;
+    h += esc(ex.clean.slice(pos, m.start)) + '<mark data-f="' + m.f + '" title="' + esc(m.field) + '">' + esc(ex.clean.slice(m.start, m.end)) + '</mark>';
+    pos = m.end;
+  });
+  h += esc(ex.clean.slice(pos));
+  let html = '<div class="sub" style="font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Normalised text the regexes see</div><pre class="hl" aria-label="Report text with highlighted matches">' + (h || '<span style="color:var(--muted)">(empty)</span>') + '</pre>';
+  html += '<div class="legend"><span><mark data-f="date">date</mark></span><span><mark data-f="revenue">revenue</mark></span><span><mark data-f="churn">churn</mark></span><span><mark data-f="nps">NPS</mark></span></div>';
+  if (ex.matches.length) {
+    html += '<div class="tbl"><table><thead><tr><th>Field</th><th>Captured</th><th>Pattern</th></tr></thead><tbody>' + ex.matches.map(function (m) {
+      return '<tr><td><code>' + m.field + '</code></td><td><code>' + esc(m.raw) + '</code>' + (m.note ? '<br><small style="color:var(--muted)">' + esc(m.note) + '</small>' : '') + '</td><td><code style="font-size:.74rem;color:var(--muted)">' + esc(m.pattern) + '</code></td></tr>';
+    }).join('') + '</tbody></table></div>';
+  } else html += '<div class="empty"><i class="fas fa-circle-question"></i>No pattern matched anything in this text.</div>';
+  if (ex.defaulted.length) html += '<p class="hint">Not found: ' + ex.defaulted.map(function (d) { return '<code>' + d.field + '</code>'; }).join(', ') + '.</p>';
+  return html;
+}
+function renderValidation(res, name) {
+  const v = res.val;
+  let h = '<div style="margin-bottom:12px">' + (v.ok ? '<span class="tag ok"><i class="fas fa-check"></i> Accepted</span>' : '<span class="tag bad"><i class="fas fa-xmark"></i> Rejected</span>') +
+    ' <span class="hint" style="margin-left:6px">' + (v.ok ? 'Record ' + res.status + ' (key: ' + esc(name.trim()) + '_' + esc(res.ex.rec.report_date) + ')' : 'Not stored. In the repo this surfaces as a failed file in the pipeline.') + '</span></div>';
+  h += '<ul class="check">' + v.checks.map(function (c, i) {
+    const icon = c.level === 'pass' ? 'fa-circle-check' : c.level === 'warn' ? 'fa-triangle-exclamation' : 'fa-circle-xmark';
+    const word = c.level === 'pass' ? 'Pass' : c.level === 'warn' ? 'Note' : 'Fail';
+    return '<li class="' + c.level + '" style="animation-delay:' + i * 50 + 'ms"><i class="fas ' + icon + '" aria-hidden="true"></i><div><b>' + word + ':</b> <code>' + c.field + '</code> · ' + esc(c.rule) + '<small>' + esc(c.detail) + '</small></div></li>';
+  }).join('') + '</ul>';
+  return h;
+}
+function run() {
+  const text = $('txt').value, name = $('fname').value;
+  if (!text.trim()) { $('out1').innerHTML = '<div class="empty"><i class="fas fa-pen"></i>Paste some report text (or pick a sample) first.</div>'; $('txt').focus(); return; }
+  if (!name.trim()) { $('fname').focus(); $('out2').innerHTML = '<div class="empty"><i class="fas fa-file"></i>Give the report a file name; it is part of the record key.</div>'; return; }
+  const res = process(text, name);
+  $('out1').innerHTML = renderMatches(res.ex);
+  $('out2').innerHTML = renderValidation(res, name);
+  $('log').innerHTML = '';
+  setSteps('done', res.val.ok ? 'done' : 'fail', res.val.ok ? 'done' : 'active');
+  refresh();
+}
+function runAll() {
+  const lines = [];
+  let last = null;
+  SAMPLES.forEach(function (s) {
+    const res = process(s.text, s.name);
+    last = { s, res };
+    const bad = res.val.checks.filter(function (c) { return c.level === 'fail'; });
+    lines.push('<div>' + (res.val.ok ? '<span class="tag ok">' + res.status + '</span> ' : '<span class="tag bad">rejected</span> ') + '<code>' + esc(s.name) + '</code>' + (bad.length ? ' · ' + esc(bad[0].detail) : '') + '</div>');
+  });
+  $('fname').value = last.s.name; $('txt').value = last.s.text;
+  $('out1').innerHTML = renderMatches(last.res.ex);
+  $('out2').innerHTML = renderValidation(last.res, last.s.name);
+  $('log').innerHTML = lines.join('');
+  setSteps('done', 'done', 'done');
+  refresh();
+}
+
+function records() { return Array.from(store.values()).sort(function (a, b) { return a.report_date < b.report_date ? -1 : a.report_date > b.report_date ? 1 : a.source_file < b.source_file ? -1 : 1; }); }
+function refresh() {
+  const recs = records();
+  $('csv').disabled = $('clear').disabled = !recs.length;
+  $('cnt').textContent = recs.length ? recs.length + ' record' + (recs.length > 1 ? 's' : '') : '';
+  if (!recs.length) {
+    $('out3').innerHTML = '<div class="empty"><i class="fas fa-database"></i>No metrics yet. Extract a report to build the table.</div>';
+    $('dash').innerHTML = '<div class="empty"><i class="fas fa-chart-column"></i>The dashboard appears once at least one record has been extracted and accepted.</div>';
+    if (chart) { chart.destroy(); chart = null; }
+    return;
+  }
+  $('out3').innerHTML = '<div class="tbl"><table><thead><tr><th>source_file</th><th>report_date</th><th class="num">revenue_usd</th><th class="num">churn_rate_pct</th><th class="num">nps_score</th></tr></thead><tbody>' +
+    recs.map(function (r) { return '<tr><td>' + esc(r.source_file) + '</td><td>' + r.report_date + '</td><td class="num">' + pyFloatStr(r.revenue_usd) + '</td><td class="num">' + pyFloatStr(r.churn_rate_pct) + '</td><td class="num">' + r.nps_score + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  buildDash(recs);
+}
+
+function buildDash(recs) {
+  const dates = Array.from(new Set(recs.map(function (r) { return r.report_date; }))).sort();
+  const sources = Array.from(new Set(recs.map(function (r) { return r.source_file; }))).sort();
+  if (dashState.from && dates.indexOf(dashState.from) < 0) dashState.from = '';
+  if (dashState.to && dates.indexOf(dashState.to) < 0) dashState.to = '';
+  if (dashState.source && sources.indexOf(dashState.source) < 0) dashState.source = '';
+  const opt = function (list, sel, blank) { return '<option value="">' + blank + '</option>' + list.map(function (d) { return '<option' + (d === sel ? ' selected' : '') + '>' + esc(d) + '</option>'; }).join(''); };
+  $('dash').innerHTML =
+    '<div class="filters"><div><label class="d-l" for="fFrom">From date</label><select id="fFrom">' + opt(dates, dashState.from, 'Earliest') + '</select></div>' +
+    '<div><label class="d-l" for="fTo">To date</label><select id="fTo">' + opt(dates, dashState.to, 'Latest') + '</select></div>' +
+    '<div><label class="d-l" for="fSrc">Source file</label><select id="fSrc">' + opt(sources, dashState.source, 'All files') + '</select></div>' +
+    '<div><span class="d-l" style="display:block;margin:0 0 6px;font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em">Trend metric</span><div class="seg" role="group" aria-label="Trend metric">' +
+    Object.keys(metrics).map(function (k) { return '<button type="button" data-m="' + k + '" aria-pressed="' + (dashState.metric === k) + '">' + { revenue_usd: 'Revenue', churn_rate_pct: 'Churn', nps_score: 'NPS' }[k] + '</button>'; }).join('') + '</div></div></div>' +
+    '<div id="dview"></div>';
+  $('fFrom').onchange = function (e) { dashState.from = e.target.value; drawDash(); };
+  $('fTo').onchange = function (e) { dashState.to = e.target.value; drawDash(); };
+  $('fSrc').onchange = function (e) { dashState.source = e.target.value; drawDash(); };
+  Array.prototype.forEach.call($('dash').querySelectorAll('.seg button'), function (b) {
+    b.onclick = function () { dashState.metric = b.dataset.m; Array.prototype.forEach.call($('dash').querySelectorAll('.seg button'), function (x) { x.setAttribute('aria-pressed', x === b); }); drawDash(); };
+  });
+  drawDash();
+}
+function drawDash() {
+  const d = dashData(records(), dashState);
+  if (chart) { chart.destroy(); chart = null; }
+  if (!d.n) { $('dview').innerHTML = '<div class="empty"><i class="fas fa-filter"></i>No records match these filters. Widen the date range or choose All files.</div>'; return; }
+  const delta = d.revDelta == null ? '' : '<span class="delta ' + (d.revDelta >= 0 ? 'up' : 'down') + '">' + (d.revDelta >= 0 ? '▲ ' : '▼ ') + Math.abs(d.revDelta).toFixed(1) + '% vs previous record</span>';
+  $('dview').innerHTML = '<div class="kpis">' +
+    '<div class="kpi"><small>Records</small><b>' + d.n + '</b></div>' +
+    '<div class="kpi"><small>Total revenue</small><b>' + fmtUsd(d.totalRevenue) + '</b></div>' +
+    '<div class="kpi"><small>Latest revenue</small><b>' + fmtUsd(d.latest.revenue_usd) + '</b>' + delta + '</div>' +
+    '<div class="kpi"><small>Avg churn</small><b>' + d.avgChurn.toFixed(2) + '%</b></div>' +
+    '<div class="kpi"><small>Avg NPS</small><b>' + d.avgNps.toFixed(1) + '</b></div></div>' +
+    '<div class="chartbox"><canvas id="cv" role="img" aria-label="Trend of ' + metrics[dashState.metric].label + ' by report date"></canvas></div>' +
+    (d.n < 2 ? '<p class="hint">Only one point so far: extract more reports (try "Extract all 5 samples") to see a trend.</p>' : '');
+  if (typeof Chart === 'undefined') { $('cv').outerHTML = '<p class="hint">Chart.js could not be loaded (offline?). KPI cards and the table still work.</p>'; return; }
+  const m = metrics[dashState.metric];
+  Chart.defaults.color = '#8a99b5';
+  chart = new Chart($('cv'), {
+    type: 'line',
+    data: { labels: d.rows.map(function (r) { return r.report_date; }), datasets: [{ label: m.label, data: d.rows.map(function (r) { return r[dashState.metric]; }), borderColor: m.color, backgroundColor: m.color + '33', fill: true, tension: .3, pointRadius: 5, pointHoverRadius: 7 }] },
+    options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { color: 'rgba(148,163,184,.1)' } }, y: { grid: { color: 'rgba(148,163,184,.1)' } } },
+      plugins: { tooltip: { callbacks: { afterLabel: function (c) { return d.rows[c.dataIndex].source_file; } } } } }
+  });
+}
+
+function download() {
+  const blob = new Blob([toCsv(records())], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'kpi_dashboard.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+}
+
+$('go').addEventListener('click', run);
+$('goAll').addEventListener('click', runAll);
+$('csv').addEventListener('click', download);
+$('clear').addEventListener('click', function () { store.clear(); $('log').innerHTML = ''; setSteps('active'); refresh(); });
+$('fname').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); run(); } });
+$('txt').addEventListener('keydown', function (e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); run(); } });
+$('strict').addEventListener('change', function () { if ($('txt').value.trim() && $('out2').querySelector('.check')) run(); });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+</body></html>
